@@ -1,0 +1,4 @@
+interface:
+  display_name: "Paper Journal Style"
+  short_description: "Journal-specific checks for abstracts, highlights, and style"
+  default_prompt: "Use $paper-journal-style to check this draft against the target journal and improve the abstract, highlights, title, or consistency."

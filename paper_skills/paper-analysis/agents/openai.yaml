@@ -1,0 +1,4 @@
+interface:
+  display_name: "Paper Analysis"
+  short_description: "Analyze experiments and guide model choice for papers"
+  default_prompt: "Use $paper-analysis to turn these results into grounded paper analysis or model guidance."

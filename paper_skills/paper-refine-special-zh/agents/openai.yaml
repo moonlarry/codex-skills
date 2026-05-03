@@ -1,0 +1,4 @@
+interface:
+  display_name: "Paper Refine Special ZH"
+  short_description: "Deep Chinese paper polishing with optional staged confirmation"
+  default_prompt: "Use $paper-refine-special-zh to deeply polish this Chinese paper section, either as a full rewrite or as a staged structure-to-logic-to-expression workflow."

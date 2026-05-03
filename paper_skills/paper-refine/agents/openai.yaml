@@ -1,0 +1,4 @@
+interface:
+  display_name: "Paper Refine"
+  short_description: "Polish, shorten, expand, or de-AI paper text"
+  default_prompt: "Use $paper-refine to improve this paper paragraph while preserving its technical meaning."

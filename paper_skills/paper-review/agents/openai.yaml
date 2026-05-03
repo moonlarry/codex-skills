@@ -1,0 +1,4 @@
+interface:
+  display_name: "Paper Review"
+  short_description: "Review papers for fatal issues and reviewer risks"
+  default_prompt: "Use $paper-review to assess this draft for substantive flaws and reviewer concerns."
