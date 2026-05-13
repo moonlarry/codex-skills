@@ -1,0 +1,4 @@
+interface:
+  display_name: "Paper Figure Archi"
+  short_description: "Generate architecture-figure prompts and image references"
+  default_prompt: "Use $paper-figure-archi to infer this method architecture, show the image-generation prompt, and generate a paper-style reference image from that same prompt."
