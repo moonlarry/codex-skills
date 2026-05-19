@@ -1,0 +1,4 @@
+interface:
+  display_name: "Paper Polish Human"
+  short_description: "Human-style post-polish pass for finished papers"
+  default_prompt: "Use $paper-polish-human after formal full-paper polishing to make this finished paper sound more naturally human while preserving academic correctness."

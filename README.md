@@ -4,7 +4,7 @@
 
 ## 这个仓库有什么用？ 🤔
 
-这个仓库源于我使用 Codex 的日常需求。写论文不是单点任务，而是一条从构思、实验、写作、审稿到 rebuttal 的长链路；每一步都需要 AI 有边界、有证据、懂学术表达。因此这个仓库把 **AI Agent 工作协议 + 学术写作 Skills** 组织成当前 7 个模块：
+这个仓库源于我使用 Codex 的日常需求。写论文不是单点任务，而是一条从构思、实验、写作、审稿到 rebuttal 的长链路；每一步都需要 AI 有边界、有证据、懂学术表达。因此这个仓库把 **AI Agent 工作协议 + 学术写作 Skills** 组织成当前 7 个模块、27 个可触发 Skills：
 
 - ✍️ **论文写作主链路**：从材料、claim 和实验结果生成论文计划、LaTeX 初稿、编译检查和完整写作流程。
 - 📊 **图表与实验表达**：围绕实验图、表格、caption、架构参考图和结果分析，帮助把 evidence 表达清楚。
@@ -37,7 +37,7 @@
 
 ### 2. paper_skills 文件夹 — 论文相关的 Skills 📚
 
-当前包含 **7 个论文写作模块、26 个可触发 Skills**，每个模块对应论文生产中的一段具体流程。迁入的论文工作流共享 `paper_skills/shared-references/` 下的写作、引用、审计和输出协议，并统一使用相对路径引用这些协议。
+当前包含 **7 个论文写作模块、27 个可触发 Skills**，每个模块对应论文生产中的一段具体流程。迁入的论文工作流共享 `paper_skills/shared-references/` 下的写作、引用、审计和输出协议，并统一使用相对路径引用这些协议。
 
 #### ✍️ 模块一：论文写作主链路（4 个）
 把已有研究叙事、实验结果和大纲组织成可编译的论文初稿。
@@ -63,7 +63,7 @@
 - `experiment-ablation-planner`：在主结果通过后，从审稿人视角设计必要、可执行、不过度堆叠的 ablation。
 - `experiment-claim-audit`：核对论文中的数字、比较和 scope claim 是否严格匹配原始结果文件。
 
-#### 🔄 模块四：翻译与润色（5 个）
+#### 🔄 模块四：翻译与润色（6 个）
 处理段落、章节和全文级表达，让论文语言更稳、更准、更像学术写作。
 
 - `paper-translate`：中英双向翻译，支持中文到英文 LaTeX、英文 LaTeX 到中文，以及中文 Word 风格学术重写。
@@ -71,6 +71,7 @@
 - `paper-refine-special-en`：英文论文高强度全局润色，按结构、逻辑、表达和 reviewer-style pass 分阶段推进。
 - `paper-refine-special-zh`：中文论文高强度全局润色，面向中文 Word 或中文 LaTeX，强调段落角色和章节推进。
 - `paper-polish-workflow`：交互式润色流程，结构→逻辑→表达→一致性，分步确认后再改文字。
+- `paper-polish-human`：受控的人类风格后润色，在 Introduction、Related Work 和 Results 中增加克制性的自然表达，支持显式开启的微量语法瑕疵模式；需在正式润色（paper-polish-workflow / paper-refine-special-en / paper-refine-special-zh）之后使用。
 
 #### 🔍 模块五：审稿与投稿检查（3 个）
 站在审稿人和投稿规范视角，检查论文是否有明显硬伤。
