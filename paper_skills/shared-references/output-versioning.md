@@ -1,6 +1,6 @@
 # Output Versioning Protocol
 
-When writing any output file that would overwrite an existing file, use timestamped filename + fixed-name latest copy:
+When writing a pipeline artifact that would overwrite an existing generated file, use timestamped filename + fixed-name latest copy. For small one-off edits, preserve the existing project style and avoid extra files unless the caller needs artifact history.
 
 1. Write output to timestamped file: `{FILENAME}_{YYYYMMDD_HHmmss}.md` (or `.json`, `.tex` as appropriate)
    - Timestamp precision to seconds to reduce collisions. In the rare case of sub-second conflicts, append `_2`, `_3` etc.

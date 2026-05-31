@@ -6,7 +6,7 @@
 
 这个仓库源于我使用 Codex 的日常需求。写论文不是单点任务，而是一条从构思、实验、写作、审稿到 rebuttal 的长链路；每一步都需要 AI 有边界、有证据、懂学术表达。因此这个仓库把 **AI Agent 工作协议 + 学术写作 Skills** 组织成当前 7 个模块、27 个可触发 Skills：
 
-- ✍️ **论文写作主链路**：从材料、claim 和实验结果生成论文计划、LaTeX 初稿、编译检查和完整写作流程。
+- ✍️ **论文写作主链路**：从材料、claim 和实验结果生成论文计划、Markdown 草稿、LaTeX 分章节成稿、编译检查和完整写作流程。
 - 📊 **图表与实验表达**：围绕实验图、表格、caption、架构参考图和结果分析，帮助把 evidence 表达清楚。
 - 🧪 **实验验证与 Claim 管理**：规划实验、判断结果是否支撑 claim、设计 ablation，并核对论文数字和证据一致性。
 - 🔄 **翻译与润色**：处理中英翻译、段落润色、全文级精修和交互式 polish，让表达更稳、更准。
@@ -42,10 +42,10 @@
 #### ✍️ 模块一：论文写作主链路（4 个）
 把已有研究叙事、实验结果和大纲组织成可编译的论文初稿。
 
-- `paper-plan`：从研究叙事、实验结果或现有材料生成论文大纲，明确 claims、evidence、章节结构、figure plan 和 citation plan。
-- `paper-write`：根据 `PAPER_PLAN.md` 逐节生成 LaTeX 论文草稿，初始化模板、章节、数学宏和参考文献。
+- `paper-plan`：从研究叙事、实验结果或现有材料生成论文大纲，锁定 2-3 个核心问题，明确 claims、evidence、Introduction Blueprint、章节结构、figure plan 和 citation plan。
+- `paper-write`：根据 `paper/PAPER_PLAN.md` 或 `PAPER_PLAN.md` 先逐节生成完整 Markdown 草稿，再把最终内容写入一章一个 `.tex` 文件。
 - `paper-compile`：编译 LaTeX、定位常见错误、循环修复，并检查 PDF、引用、页数和 stale section 文件。
-- `paper-writing`：完整写作编排入口，串联 `paper-plan → paper-figure → paper-write → paper-compile → local review-and-polish`。
+- `paper-writing`：完整写作编排入口，串联 `paper-plan → paper-figure → Markdown draft → LaTeX section files → paper-compile → paper-review → formal polish → optional human polish → audits`。
 
 #### 📊 模块二：图表与实验表达（4 个）
 把实验结果、算法结构和图表需求变成论文中能读懂的 visual evidence。

@@ -234,10 +234,8 @@ Before finishing, verify each figure (from pedrohcgs/claude-code-my-workflow):
 ```
 figures/
 ├── paper_plot_style.py          # shared style config
-├── gen_fig1_architecture.py     # per-figure scripts
 ├── gen_fig2_training_curves.py
 ├── gen_fig3_comparison.py
-├── fig1_architecture.pdf        # generated figures
 ├── fig2_training_curves.pdf
 ├── fig3_comparison.pdf
 ├── latex_includes.tex           # LaTeX snippets for all figures
@@ -266,7 +264,7 @@ figures/
 | Scatter plot | Correlation analysis | 0.48\textwidth |
 | Heatmap | Attention, confusion matrix | 0.48\textwidth |
 | Box/violin | Distribution comparison | 0.48\textwidth |
-| Architecture | System overview | 0.95\textwidth |
+| Architecture | Manual reference via `paper-figure-archi`, then editable redraw | 0.95\textwidth |
 | Multi-panel | Combined results (subfigures) | 0.95\textwidth |
 | Comparison table | Prior bounds vs. ours (theory) | full width |
 

@@ -252,7 +252,7 @@ For each issue, explicitly choose one of:
 - **WEAKEN_CLAIM**: Reduce conclusion scope
 - **ADD_REFERENCE**: Cite known result + verify its conditions apply
 
-Log this choice — it is a scope-changing decision when it alters theorem statements.
+Log this choice. `STRENGTHEN_ASSUMPTION` and `WEAKEN_CLAIM` are scope-changing decisions: propose the exact theorem/claim delta and get explicit user approval before editing the statement, theorem scope, or paper-level claim. Without approval, record the proposed fix in `PROOF_AUDIT.md` and only apply derivation or exposition fixes that preserve the original claim.
 
 #### Step 2b: Derive the fix mathematically
 - Complete mathematical derivation, not just a claim
@@ -377,14 +377,14 @@ Write `PROOF_CHECK_STATE.json`:
 
 ### Cross-model protocol
 - **Role separation**: the paper executor reads the proof, formulates questions, and implements fixes; the paper architect/reviewer provides adversarial review.
-- **Codex reasoning always xhigh**: Never downgrade.
+- **Use sufficient reasoning for proof risk**: allocate enough review depth for theorem-level correctness without hard-coding a backend or model setting.
 - **Send full content**: Don't summarize — send actual math for line-by-line checking.
 - **Preserve review continuity only when appropriate**: for independent proof rounds, prefer fresh reviewer context; for narrow follow-ups, pass only the revised artifact and targeted question.
 
 ### Fix quality
 - **Minimal fixes**: Fix exactly what's broken, nothing more.
 - **Full derivation**: Every fix includes complete mathematical argument.
-- **Explicit scope decisions**: Each fix is tagged ADD_DERIVATION / STRENGTHEN_ASSUMPTION / WEAKEN_CLAIM / ADD_REFERENCE.
+- **Explicit scope decisions**: Each fix is tagged ADD_DERIVATION / STRENGTHEN_ASSUMPTION / WEAKEN_CLAIM / ADD_REFERENCE. Scope-changing fixes require user approval before implementation.
 - **Compile after each fix**: LaTeX must compile cleanly.
 
 ### Scope honesty

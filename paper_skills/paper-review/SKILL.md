@@ -7,7 +7,7 @@ description: Review paper text or PDFs from a final-check or reviewer perspectiv
 
 ## Overview
 
-Use this skill for evaluation rather than rewriting. For full-paper PDF review where layout and page context matter, also use the local `pdf` skill at `C:\Users\pc\.codex\skills\pdf\SKILL.md`.
+Use this skill for evaluation rather than rewriting. For full-paper PDF review where layout and page context matter, also use the local `pdf` skill workflow when available.
 
 ## Workflow
 

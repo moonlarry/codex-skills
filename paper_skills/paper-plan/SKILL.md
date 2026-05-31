@@ -56,7 +56,82 @@ Build a **Claims-Evidence Matrix**:
 | [claim 2] | [exp C] | Partially supported | §4.1 |
 ```
 
-### Step 2: Determine Paper Type and Structure
+### Step 2: Lock the Problem Definition
+
+Before designing the outline, define the paper's central problems. Default to **2-3 problems**. Prefer user-provided problems; if the user did not provide them, infer problems from the algorithmic improvement, engineering demand, existing-method limitations, and available experimental evidence.
+
+Each problem must be specific enough to drive the Introduction, Related Work, Method, and Results analysis. Do not use broad field-level problems such as "improve performance" unless the mechanism and failure mode are named.
+
+Create a **Problem Definition Lock**:
+
+```markdown
+## Problem Definition Lock
+
+| Problem ID | Problem Statement | Why It Matters | Existing-Method Limitation | Algorithm/Framework Improvement | Required Evidence | Affected Sections |
+|------------|-------------------|----------------|-----------------------------|----------------------------------|-------------------|-------------------|
+| P1 | [problem] | [engineering/scientific demand] | [gap] | [improvement] | [experiment/figure/table] | §1, §2, §3, §4 |
+| P2 | [problem] | [engineering/scientific demand] | [gap] | [improvement] | [experiment/figure/table] | §1, §2, §3, §4 |
+```
+
+Then create a **Problem-Story Alignment Matrix**:
+
+```markdown
+## Problem-Story Alignment Matrix
+
+| Problem | Engineering Demand | Existing Gap | Algorithmic Improvement | Evidence | Intro Role | Related Work Role | Results Analysis Role |
+|---------|--------------------|--------------|--------------------------|----------|------------|-------------------|-----------------------|
+| P1 | [demand] | [gap] | [improvement] | [evidence] | [paragraph role] | [category/limitation] | [result paragraph role] |
+```
+
+If a problem has no evidence, mark it as `needs evidence` and do not let it become a main contribution without user approval.
+
+### Step 3: Build the Introduction Blueprint
+
+Plan the Introduction before section-level outlining. It must follow this order:
+
+1. **Engineering demand** — why the task matters in practice or science.
+2. **Problem emergence** — how that demand creates the paper's problem; prove the problem is important and worth studying.
+3. **Existing method categories** — summarize the main categories of prior methods.
+4. **2-3 limitations** — each limitation gets one paragraph; the first sentence must state the limitation clearly, and the rest of the paragraph must explain only that limitation.
+5. **Method transition** — one sentence: based on the above, this paper proposes `[algorithm/framework]`.
+6. **3-4 contributions** — each item starts by naming the contribution, followed by 3-4 sentences explaining the algorithm/framework improvement and its effect. If the paper has experiments, the last contribution must report improvement over baselines.
+7. **Paper organization** — one short paragraph mapping sections.
+
+Output this blueprint in `PAPER_PLAN.md`:
+
+```markdown
+## Introduction Blueprint
+
+### Engineering Demand
+[why the task matters]
+
+### Problem Emergence
+[how demand creates P1-P3 and why they must be studied]
+
+### Existing Method Categories
+1. [category A]
+2. [category B]
+3. [category C, optional]
+
+### Limitations of Existing Methods
+- **Limitation 1**: [first sentence states the limitation. Follow-up sentences explain only this limitation.]
+- **Limitation 2**: [same structure.]
+- **Limitation 3**: [optional, same structure.]
+
+### Proposed Method Transition
+Based on the above, this paper proposes [algorithm/framework] to address [P1-P3].
+
+### Contributions
+1. [Contribution 1: first sentence names the contribution. Then explain the improvement and effect in 3-4 sentences.]
+2. [Contribution 2: same structure.]
+3. [Contribution 3: same structure.]
+4. [Experimental contribution if experiments exist: include concrete improvement over baselines.]
+
+### Paper Organization
+[section-by-section roadmap]
+```
+
+### Step 4: Determine Paper Type and Structure
 
 Based on TARGET_VENUE and paper content, classify and select structure.
 
@@ -106,7 +181,7 @@ Theory papers should:
 6. Conclusion (0.5 pages)
 ```
 
-### Step 3: Section-by-Section Planning
+### Step 5: Section-by-Section Planning
 
 For each section, specify:
 
@@ -120,17 +195,19 @@ For each section, specify:
 - **Self-contained check**: can a reader understand this without the paper?
 
 ### §1 Introduction
-- **Opening hook**: [1-2 sentences that motivate the problem]
-- **Gap**: [what's missing in prior work]
-- **Key questions**: [the research questions this paper answers]
-- **Contributions**: [numbered list, matching Claims-Evidence Matrix]
+- **Engineering demand**: [what real-world/scientific need starts the story]
+- **Problem emergence**: [how that demand creates P1-P3 and why the problems matter]
+- **Existing method categories**: [2-3 categories summarized before critique]
+- **Limitations**: [2-3 limitation paragraphs, first sentence states each limitation]
+- **Method transition**: [one sentence introducing the proposed algorithm/framework]
+- **Contributions**: [3-4 numbered items, matching Problem Definition Lock and Claims-Evidence Matrix]
 - **Hero figure**: [describe what Figure 1 should show — MUST include clear comparison if applicable]
 - **Estimated length**: 1.5 pages
 - **Key citations**: [3-5 papers to cite here]
 
 ### §2 Related Work
-- **Subtopics**: [2-4 categories of related work]
-- **Positioning**: [how this paper differs from each category]
+- **Subtopics**: [2-4 categories of related work, aligned to Introduction method categories and limitations]
+- **Positioning**: [which problem/limitation each category addresses or fails to address]
 - **Minimum length**: 1 full page (at least 3-4 paragraphs with substantive synthesis)
 - **Must NOT be just a list** — synthesize, compare, and position
 
@@ -156,7 +233,7 @@ For each section, specify:
 - **Estimated length**: 0.5 pages
 ```
 
-### Step 4: Figure Plan
+### Step 6: Figure Plan
 
 List every figure and table:
 
@@ -177,7 +254,7 @@ List every figure and table:
 - What the visual difference should demonstrate
 - Caption draft that clearly states the comparison
 
-### Step 5: Citation Scaffolding
+### Step 7: Citation Scaffolding
 
 For each section, list required citations:
 
@@ -194,7 +271,7 @@ For each section, list required citations:
 3. Flag any citation you're unsure about with `[VERIFY]`
 4. Prefer published versions over arXiv preprints when available
 
-### Step 6: Paper Architect/Reviewer Cross-Review
+### Step 8: Paper Architect/Reviewer Cross-Review
 
 Delegate the complete outline to the paper architect/reviewer role for feedback:
 
@@ -209,6 +286,8 @@ Paper architect/reviewer task:
   3. Missing experiments or analysis
   4. Positioning relative to prior work
   5. Page budget feasibility (MAX_PAGES = main body to Conclusion end, excluding refs/appendix)
+  6. Problem-story alignment — do Introduction, Related Work, Method, and Results all follow P1-P3?
+  7. Introduction blueprint — does it follow engineering demand -> problem -> existing methods -> limitations -> proposed method -> contributions -> organization?
 
   For each weakness, suggest the MINIMUM fix.
   Be specific and actionable — "add X" not "consider more experiments".
@@ -216,9 +295,9 @@ Paper architect/reviewer task:
 
 Apply feedback before finalizing.
 
-### Step 7: Output
+### Step 9: Output
 
-Save the final outline to `PAPER_PLAN.md` in the project root:
+Save the final outline to `paper/PAPER_PLAN.md` when the project uses the paper-skill layout. If an existing project already uses root-level `PAPER_PLAN.md`, keep that layout and treat the root file as a legacy-compatible fallback.
 
 ```markdown
 # Paper Plan
@@ -233,21 +312,30 @@ Save the final outline to `PAPER_PLAN.md` in the project root:
 ## Claims-Evidence Matrix
 [from Step 1]
 
+## Problem Definition Lock
+[from Step 2]
+
+## Problem-Story Alignment Matrix
+[from Step 2]
+
+## Introduction Blueprint
+[from Step 3]
+
 ## Structure
-[from Step 2-3, section by section]
+[from Step 4-5, section by section]
 
 ## Figure Plan
-[from Step 4, with detailed hero figure description]
+[from Step 6, with detailed hero figure description]
 
 ## Citation Plan
-[from Step 5]
+[from Step 7]
 
 ## Reviewer Feedback
-[from Step 6, summarized]
+[from Step 8, summarized]
 
 ## Next Steps
 - [ ] /paper-figure to generate all figures
-- [ ] /paper-write to draft LaTeX
+- [ ] /paper-write to draft Markdown and finalize LaTeX
 - [ ] /paper-compile to build PDF
 ```
 
@@ -261,6 +349,8 @@ Save the final outline to `PAPER_PLAN.md` in the project root:
 - **MAX_PAGES counting differs by venue** — ML conferences: main body to Conclusion end, references/appendix NOT counted. **IEEE venues: references ARE counted toward the page limit.**
 - **Venue-specific norms** — ML conferences (ICLR/NeurIPS/ICML) use `natbib` (`\citep`/`\citet`); **IEEE venues use `cite` package (`\cite{}`, numeric style)**
 - **Claims-Evidence Matrix is the backbone** — every claim must map to evidence, every experiment must support a claim
+- **Problem Definition Lock is binding** — Introduction, Related Work, Method, and Results must all align to the 2-3 locked problems
+- **Introduction needs a blueprint** — do not start drafting until engineering demand, problem emergence, method categories, limitations, contribution structure, and organization are planned
 - **Figures need detailed descriptions** — especially the hero figure, which must clearly specify comparisons and visual expectations
 - **Section count is flexible** — 5-8 sections depending on paper type. Don't force content into a rigid 5-section template.
 
@@ -272,5 +362,5 @@ Outline methodology inspired by [Research-Paper-Writing-Skills](https://github.c
 
 > Follow these shared protocols for all output files:
 > - **[Output Versioning Protocol](../shared-references/output-versioning.md)** — write timestamped file first, then copy to fixed name
-> - **[Output Manifest Protocol](../shared-references/output-manifest.md)** — log every output to MANIFEST.md
+> - **[Output Manifest Protocol](../shared-references/output-manifest.md)** — log pipeline artifacts and generated overwrites to MANIFEST.md
 > - **[Output Language Protocol](../shared-references/output-language.md)** — respect the project's language setting

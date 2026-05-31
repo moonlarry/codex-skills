@@ -103,7 +103,7 @@ if paper/PAPER_CLAIM_AUDIT.json exists:
 else:
     paper_claim_audit = "unavailable"
     verdict is labeled "provisional — no paper claim audit available"
-    (this does NOT block anything — pipeline continues normally)
+    (this does not block evidence collection, but any downstream writing verdict remains provisional)
 ```
 
 See `../shared-references/assurance-contract.md` for the audit artifact contract.
@@ -115,7 +115,7 @@ See `../shared-references/assurance-contract.md` for the audit artifact contract
 1. Record postmortem in findings.md (Research Findings section):
    - What was tested, what failed, hypotheses for why
    - Constraints for future attempts (what NOT to try again)
-2. Update the project pipeline status in `AGENTS.md` or project notes
+2. Update the project pipeline status in `findings.md`, `EXPERIMENT_RESULT_TO_CLAIM.md`, `paper/EXPERIMENT_TRACKER.md`, or project notes. Do not edit `AGENTS.md` as a status log.
 3. Decide whether to pivot to a user-provided alternative, revise the method, or narrow the paper claim
 
 #### `partial` — Claim partially supported
@@ -157,7 +157,7 @@ If `PAPER_PLAN.md` exists, also note which planned claim or section should be up
 - Do not inflate claims beyond what the data supports. If the reviewer says "partial", do not round up to "yes".
 - A single positive result on one dataset does not support a general claim. Be honest about scope.
 - If `confidence` is low, treat the judgment as inconclusive and add experiments rather than committing to a claim.
-- If reviewer delegation is unavailable, make the best local judgment you can and mark it `[pending external review]` - do not block the pipeline.
+- If reviewer delegation is unavailable, make the best local judgment you can and mark it `[pending external review]`. Drafting may continue only as provisional work; do not route to confirmed paper writing as if the claim passed.
 - Always record the verdict and reasoning in findings.md, regardless of outcome.
 
 ## Review Tracing

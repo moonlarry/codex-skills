@@ -1,6 +1,6 @@
 # Output Manifest Protocol
 
-After writing any output file, append an entry to `MANIFEST.md` in the project root.
+For pipeline artifacts or files that overwrite an existing generated artifact, append an entry to `MANIFEST.md` in the project root. For small one-off edits, inline rewrites, or user-provided source files, manifest logging is optional unless the calling skill explicitly requires it.
 
 ## Format
 

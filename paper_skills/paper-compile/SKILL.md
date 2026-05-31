@@ -26,7 +26,7 @@ Check that the compilation environment is ready:
 # Check LaTeX installation
 which pdflatex && which latexmk && which bibtex
 
-# If not installed, provide instructions:
+# If not installed, report the missing tool and ask before installing anything:
 # macOS: brew install --cask mactex-no-gui
 # Ubuntu: sudo apt-get install texlive-full
 # Server: conda install -c conda-forge texlive-core
@@ -64,7 +64,7 @@ If compilation fails, read `compile.log` and fix common errors:
 ```
 ! LaTeX Error: File `somepackage.sty' not found.
 ```
-→ Install via `tlmgr install somepackage` or remove the `\usepackage` if unused.
+→ Prefer removing unused `\usepackage` lines or replacing them with packages already available in the template. If the package is truly required, ask for explicit user approval before installing it with `tlmgr` or any system package manager.
 
 **Undefined references:**
 ```
@@ -238,7 +238,7 @@ For conference submission, additional checks:
 - **Never delete the user's source files** — only modify to fix errors
 - **Keep compile.log** — useful for debugging
 - **Don't suppress warnings** — report them, let the user decide
-- **If LaTeX is not installed**, provide clear installation instructions rather than failing silently
+- **If LaTeX or a package is not installed**, diagnose and provide clear instructions; do not install new dependencies without explicit user approval
 - **Font embedding is critical** — some venues reject PDFs with non-embedded fonts
 - **Page count rules differ by venue** — ML conferences: main body to Conclusion (refs excluded). **IEEE venues: total pages including references.**
 
