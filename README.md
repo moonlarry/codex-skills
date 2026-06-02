@@ -37,7 +37,7 @@
 
 ### 2. paper_skills 文件夹 — 论文相关的 Skills 📚
 
-当前包含 **7 个论文写作模块、27 个可触发 Skills**，每个模块对应论文生产中的一段具体流程。迁入的论文工作流共享 `paper_skills/shared-references/` 下的写作、引用、审计和输出协议，并统一使用相对路径引用这些协议。
+当前包含 **7 个论文写作模块、28 个可触发 Skills**，每个模块对应论文生产中的一段具体流程。迁入的论文工作流共享 `paper_skills/shared-references/` 下的写作、引用、审计和输出协议，并统一使用相对路径引用这些协议。
 
 #### ✍️ 模块一：论文写作主链路（4 个）
 把已有研究叙事、实验结果和大纲组织成可编译的论文初稿。
@@ -71,6 +71,7 @@
 - `paper-refine-special-en`：英文论文高强度全局润色，按结构、逻辑、表达和 reviewer-style pass 分阶段推进。
 - `paper-refine-special-zh`：中文论文高强度全局润色，面向中文 Word 或中文 LaTeX，强调段落角色和章节推进。
 - `paper-polish-workflow`：交互式润色流程，结构→逻辑→表达→一致性，分步确认后再改文字。
+- `paper-style-calibration`：基于外部样本（用户已有论文、参考论文、风格描述）进行风格校准。支持 PDF、TeX、Markdown、Word 输入（优先使用可编辑格式），提取风格特征并安全应用到目标论文，同时保护所有事实内容不被迁移。推荐流程：paper-refine-special-en → paper-style-calibration → paper-polish-human。
 - `paper-polish-human`：受控的人类风格后润色，在 Introduction、Related Work 和 Results 中增加克制性的自然表达，支持显式开启的微量语法瑕疵模式；需在正式润色（paper-polish-workflow / paper-refine-special-en / paper-refine-special-zh）之后使用。
 
 #### 🔍 模块五：审稿与投稿检查（3 个）
@@ -130,6 +131,7 @@
 | paper_skills 部分写作 Skills | [awesome-ai-research-writing](https://github.com/Leey21/awesome-ai-research-writing) by Leey21 |
 | 论文模块一、二、三、六中的部分 skills / 工作流设计 | [Auto-claude-code-research-in-sleep](https://github.com/wanshuiyin/Auto-claude-code-research-in-sleep) by wanshuiyin |
 | Rebuttal 相关 Skills | [Paper2Rebuttal](https://github.com/AutoLab-SAI-SJTU/Paper2Rebuttal) by AutoLab-SAI-SJTU |
+| paper-polish-human AI 模式检测 | [humanizer](https://github.com/blader/humanizer) by blader (基于 Wikipedia "Signs of AI writing") |
 
 感谢这些项目作者的辛勤工作！🌟
 

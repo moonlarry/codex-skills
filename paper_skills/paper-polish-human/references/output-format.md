@@ -9,8 +9,11 @@ Part 1 [Human-Polished Text]
 <revised text>
 
 Part 2 [Humanization Log]
+- Document context: [regular paper / rebuttal / revision letter / response to reviewers]
 - Sections edited:
+- AI patterns addressed: [pattern IDs with brief cues, e.g., VOCAB_DENSITY("pivotal"), SUPERFICIAL_ING("underscoring"), SIG_INFLATION("broader impact")]
 - Main style changes:
+- Claim safety: no new claims, numbers, citations, limitations, or comparisons added.
 - Technical items preserved:
 - Preserved existing natural traces:
 
@@ -25,9 +28,11 @@ Part 4 [Grammar-Imperfection Log]
 - Inserted imperfections:
 
 Part 5 [Verification Notes]
-- Verified:
-- Assumptions:
-- Unrun checks:
+- Audit pass completed: [list any concerns or "None identified"]
+- Context detected: [regular paper / rebuttal / revision letter]
+- REBUTTAL_DIFF_ANCHORING: [applied / not applied (context mismatch)]
+- Preserved: technical terms, citations, LaTeX commands, numerical claims
+- Remaining risk: [state if any, otherwise "None in reviewed scope"]
 ```
 
 ## Grammar-Imperfection Log

@@ -48,13 +48,34 @@ When grammar-error mode is enabled:
    - English LaTeX
    - Chinese LaTeX
    - Word-style prose
-2. Give the pre-edit reminder, then proceed directly with this final human-style pass.
-3. Read `references/human-style-policy.md`.
-4. Read `references/section-targeting.md` to restrict edits to eligible sections.
-5. Read `references/ratio-calibration.md` to keep the approximate formal-to-natural ratio near 7:3.
-6. Read `references/output-format.md` before returning the final result.
-7. Apply the smallest set of changes that makes the polished paper sound less mechanical while preserving academic quality.
-8. Verify that facts, formulas, citations, labels, references, numeric results, and LaTeX commands are unchanged.
+2. Detect document context (regular paper vs rebuttal/revision letter). If the document is a rebuttal, revision letter, or response to reviewers, apply REBUTTAL_DIFF_ANCHORING pattern as appropriate.
+3. Give the pre-edit reminder, then proceed directly with this final human-style pass.
+4. Read `references/human-style-policy.md` (including Authorial Stance Guardrails in Hard Constraints and Manuscript-Local Voice Calibration).
+5. Read `references/ai-pattern-detection.md` to identify applicable AI writing patterns (apply REBUTTAL_DIFF_ANCHORING only in rebuttal/revision context).
+6. Read `references/section-targeting.md` to restrict edits to eligible sections.
+7. Read `references/ratio-calibration.md` to keep the approximate formal-to-natural ratio near 7:3.
+8. Read `references/output-format.md` before returning the final result.
+9. Apply the smallest set of changes that makes the polished paper sound less mechanical while preserving academic quality.
+10. Run the Audit Pass (see below).
+11. Verify that facts, formulas, citations, labels, references, numeric results, and LaTeX commands are unchanged.
+
+## Audit Pass
+
+Before finalizing, audit the rewrite for academic safety:
+
+1. **Factual integrity**: No numbers, datasets, metrics, comparisons, citations, definitions, theorem statements, or claims were changed unless explicitly requested.
+
+2. **Source integrity**: LaTeX commands, equations, citations, references, labels, BibTeX keys, code-like tokens, and range notation (`--`, `---`) are preserved. Math expressions, macros, tables, figure labels, and dash syntax are unchanged.
+
+3. **Academic convention safety**: Passive voice, hedging, technical term reuse, section roadmapping, contribution lists, and result descriptions were not treated as AI-like by default.
+
+4. **Voice calibration**: The rewrite matches the manuscript-local academic voice rather than a generic conversational style.
+
+5. **Humanization safety**: No anecdotes, emotions, unsupported background, stronger conclusions, decorative dashes, or persuasive tropes were introduced.
+
+6. **Scope control**: Only genuine AI-pattern risks were revised; stable technical content was left intact.
+
+7. **Context/mode audit**: Document context (regular paper vs rebuttal/revision letter) was correctly detected. REBUTTAL_DIFF_ANCHORING was applied ONLY in rebuttal/revision context and disabled elsewhere.
 
 ## Hard Constraints
 
@@ -67,3 +88,5 @@ When grammar-error mode is enabled:
 ## Output Rules
 
 Use the structure in `references/output-format.md`. Always distinguish verified preservation from assumptions or unrun checks.
+
+When uncertain about the intended edit strength or safety boundaries, consult `references/example-transformation.md` for illustrated examples.
