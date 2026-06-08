@@ -174,6 +174,34 @@ Factual accuracy > Venue requirements > Style preferences
 - Style prefers short sentences, but claim needs length → Keep length
 - Style prefers no hedging, but evidence is tentative → Keep hedging
 
+## Multi-Source Safety
+
+When multiple sources used:
+
+### Aggregation Safety
+
+**Filter source-specific patterns**:
+- Pattern in only 1 source → `source_specific` → do not recommend
+- Pattern in 2+ sources → `consensus` or `variant` → may recommend
+
+**Avoid multi-source plagiarism**:
+- Check N-grams against ALL sources
+- Check against combined source set
+- Mark `aggregation_mode: multi_source`
+
+**Conflict handling**:
+- No consensus → mark `no_consensus`
+- Do not average conflicting styles
+- Do not randomly select
+- Preserve target's current style when no consensus
+
+### Cross-Source N-gram Check
+
+After restructure, check against:
+- Each individual source
+- Combined source text
+- Flag any 8+ word matches
+
 ## Summary
 
 ```
@@ -187,8 +215,15 @@ BLOCKED:
 - Expression: Source phrasing, unique sequences
 - Structure: Source order, organization
 
+MULTI-SOURCE:
+- Filter: source-specific patterns (support < 2)
+- Check: N-grams against all sources
+- Mark: aggregation_mode: multi_source
+- Conflict: no_consensus, not averaged
+
 GUARANTEED:
 - Original files never modified
 - Changes only to copies in restructured/
 - All modifications target-grounded
+- Multi-source: only consensus patterns recommended
 ```

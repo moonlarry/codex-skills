@@ -38,6 +38,8 @@ Use this skill to calibrate the writing style of a target manuscript based on ex
 
 ## Input
 
+### Single Source (Standard)
+
 ```
 /paper-style-calibration source=<path> target=<path>
 ```
@@ -45,6 +47,37 @@ Use this skill to calibrate the writing style of a target manuscript based on ex
 **Parameters**:
 - `source`: Reference paper/style source (PDF/TeX/Markdown/Word)
 - `target`: Target paper to calibrate (TeX/Markdown recommended)
+
+### Multiple Sources (Multi-source Aggregation)
+
+```
+/paper-style-calibration sources=<path1,path2,path3> target=<path>
+```
+
+**Parameters**:
+- `sources`: Comma-separated list of reference papers (2-5 papers recommended)
+- `target`: Target paper to calibrate
+
+**Multi-source mode**:
+- Each source independently analyzed
+- Patterns aggregated across sources
+- Common patterns kept (high confidence)
+- Source-specific patterns filtered out
+- Conflicts marked as `no_consensus`
+
+**Examples**:
+```
+# Single source
+/paper-style-calibration source=reference.tex target=my.tex
+
+# Multiple sources (comma-separated)
+/paper-style-calibration sources=paper1.tex,paper2.tex,paper3.tex target=my.tex
+
+# Multiple sources with directory
+/paper-style-calibration sources=paper1.tex,papers/,paper2.md target=my.tex
+```
+
+**Note**: `source=` and `sources=` are mutually exclusive. Use one or the other.
 
 **Format auto-detection** (no need to specify):
 - `.tex` → TeX
@@ -64,14 +97,28 @@ Stage 1: Profile ──► Stage 2: Diagnosis ──► Stage 3: Restructure
 
 ### Stage 1: Profile
 
-Extract complete style profile from source:
+Extract complete style profile from source(s):
+
+**Single source**:
+- Extract profile from one reference paper
+
+**Multiple sources**:
+- Extract profile from each source independently
+- Aggregate patterns across sources
+- Identify consensus patterns (common across sources)
+- Filter out source-specific patterns
+- Mark conflicts as `no_consensus`
+
+**Extracted elements**:
 - Introduction rhetorical architecture (Move 1-3)
 - Research status synthesis patterns
 - Gap/problem framing patterns
 - Contribution-response alignment
 - Voice, sentence rhythm, transitions (secondary)
 
-**Output**: `profile/style_profile.md`, `profile/style_metrics.json`
+**Output** (single source): `profile/style_profile.md`, `profile/style_metrics.json`
+
+**Output** (multi-source): `profile/style_profile.md`, `profile/aggregation_report.md`
 
 ### Stage 2: Diagnosis
 
@@ -126,12 +173,19 @@ All outputs go to current working directory:
    - Preserve all factual content: claims, numbers, citations, equations
 
 3. **No content migration**
-   - Do not copy methods, arguments, or specific content from source
+   - Do not copy methods, arguments, or specific content from source(s)
    - Extract only abstract, de-identified patterns
+   - For multi-source: aggregate only common patterns, filter source-specific content
 
 4. **Target-grounded**
    - Every change must use facts already in target paper
    - Do not introduce new claims, examples, or evidence
+
+5. **Multi-source safety**
+   - Each source independently analyzed
+   - Source-specific patterns filtered out
+   - Only consensus patterns (supported by 2+ sources) recommended
+   - Conflicts marked as `no_consensus`, not averaged
 
 ## Relationship with Other Skills
 
@@ -152,6 +206,8 @@ paper-refine-special-en → paper-style-calibration → paper-polish-human (opti
 - Does NOT modify original files (creates copies)
 - Does NOT generate output to `psmfiles/` (uses `paper-style/`)
 - Does NOT require `source_kind` (auto-detects format)
+- Does NOT support more than 5 sources (limit: 2-5 for quality)
+- Does NOT average conflicting styles (marks as `no_consensus`)
 
 ## Error Handling
 
@@ -164,8 +220,11 @@ If any stage fails:
 ## Example Usage
 
 ```
-# Basic usage
+# Single source
 /paper-style-calibration source=reference.tex target=my_paper.tex
+
+# Multiple sources (comma-separated)
+/paper-style-calibration sources=paper1.tex,paper2.tex,paper3.tex target=my_paper.tex
 
 # Output will be at:
 # ./paper-style/runs/20260608-153012-my_paper/

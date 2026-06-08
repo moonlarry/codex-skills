@@ -2,9 +2,20 @@
 
 ## Input Handling
 
-This skill accepts two inputs:
-- `source`: Reference paper/style source
+### Single Source Mode
+- `source`: Reference paper/style source (single file)
 - `target`: Target paper to calibrate
+
+### Multi-Source Mode
+- `sources`: Comma-separated list of reference papers (2-5 papers)
+- `target`: Target paper to calibrate
+
+**Mutually exclusive**: Use `source=` OR `sources=`, not both.
+
+**Source limits**:
+- Minimum: 2 papers (for aggregation)
+- Maximum: 5 papers (for quality control)
+- Recommended: 3-5 papers
 
 ## Format Auto-Detection
 
@@ -106,6 +117,38 @@ Default calibration scope (prose-heavy sections):
 - Limitations
 
 User can override: specify sections in natural language.
+
+## Multi-Source Discovery
+
+When `sources=` provided:
+
+### Discovery Process
+
+1. **Parse paths**: Split by comma
+2. **Identify papers**:
+   - For files: Check if root document (contains `\documentclass`)
+   - For directories: Scan recursively, find all root documents
+3. **Deduplication**:
+   - Canonical path deduplication
+   - Content hash deduplication
+4. **Validation**: Ensure 2-5 unique papers
+
+### Root Document Detection
+
+A valid paper root must contain:
+```latex
+\documentclass{...}
+\begin{document}
+```
+
+Non-root files (via `\input`, `\include`) are traced to their root.
+
+### Directory Scanning
+
+- Recursive scan for `.tex` files
+- Ignore: `.git/`, build directories, output directories
+- Do not follow symbolic links
+- Sort by canonical path for reproducibility
 
 ## Output Path Convention
 

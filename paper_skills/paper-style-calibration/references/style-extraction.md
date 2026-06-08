@@ -2,12 +2,20 @@
 
 ## Overview
 
-Extract complete style profile from source document. This is always full analysis (no depth levels).
+Extract complete style profile from source document(s). This is always full analysis (no depth levels).
 
 ## Extraction Pipeline
 
+### Single Source
 ```
 Source Document → Text Extraction → Full Analysis → De-identification → Style Profile
+```
+
+### Multi-Source
+```
+Source 1 ──► Profile 1 ──┐
+Source 2 ──► Profile 2 ──┼──► Aggregation ──► Style Profile
+Source 3 ──► Profile 3 ──┘
 ```
 
 ## Core Extraction Dimensions
@@ -205,8 +213,57 @@ Structured data for programmatic use:
 }
 ```
 
+## Multi-Source Aggregation
+
+When multiple sources provided:
+
+### Aggregation Rules
+
+**Pattern Status Classification**:
+
+| Support | Eligible | Status | Behavior |
+|---------|----------|--------|----------|
+| `support >= 2` and `support * 3 >= eligible * 2` | `eligible >= 2` | `consensus` | Recommended pattern |
+| `support >= 2` (not consensus) | `eligible >= 2` | `variant` | Optional variant |
+| `support == 1` | any | `source_specific` | Report only, not recommended |
+
+**Example** (3 sources):
+- Pattern in 3/3 sources → `consensus`
+- Pattern in 2/3 sources → `consensus` (2*3=6 >= 2*3=6)
+- Pattern in 1/3 sources → `source_specific`
+
+**Conflict Handling**:
+- Conflicting patterns with no consensus → mark `no_consensus`
+- Do not average conflicting styles
+- Report conflicts in aggregation report
+
+**Field-Level Aggregation**:
+
+```yaml
+pattern:
+  template: "[METHOD] achieves [RESULT] on [EVALUATION_CONTEXT]"
+  support_sources: 3
+  eligible_sources: 3
+  prevalence: 1.0
+  status: consensus
+```
+
+### Aggregation Output
+
+**style_profile.md**:
+- `consensus` patterns only
+- `variant` patterns (optional)
+- Short `no_consensus` warnings
+
+**aggregation_report.md**:
+- Source discovery and deduplication
+- Per-pattern support/eligible/prevalence/status
+- Conflicts and `no_consensus` details
+- Extraction failures
+
 ## Extraction Guarantee
 
 - Always full analysis (no depth levels)
 - Always de-identified (no source-specific content)
 - Always abstract patterns (no sentence-level extraction)
+- Multi-source: only consensus patterns recommended

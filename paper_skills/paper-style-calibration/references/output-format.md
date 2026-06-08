@@ -302,6 +302,63 @@ Original file:
 - Headers preserved
 - Links preserved
 
+## Multi-Source Output
+
+When `sources=` (multiple sources) used:
+
+```
+profile/
+├── style_profile.md              # Aggregated style (consensus + variants)
+├── aggregation_report.md         # Aggregation process report
+└── source_individual/            # Per-source summaries (optional)
+    ├── source_1_summary.md
+    └── source_2_summary.md
+```
+
+### profile/aggregation_report.md
+
+```markdown
+# Aggregation Report
+
+## Source Discovery
+- Discovered: 3 papers
+- Deduplicated: 3 papers (0 removed)
+- Eligible: 3 papers
+
+## Per-Pattern Analysis
+
+### Pattern: result_summary
+- Template: "[METHOD] achieves [RESULT] on [EVALUATION_CONTEXT]"
+- Support: 3/3
+- Prevalence: 1.0
+- Status: consensus
+
+### Pattern: gap_framing
+- Template: "However, existing approaches struggle with [PROBLEM]"
+- Support: 2/3
+- Prevalence: 0.67
+- Status: consensus
+
+### Pattern: unique_to_source_3
+- Template: "In this groundbreaking work..."
+- Support: 1/3
+- Prevalence: 0.33
+- Status: source_specific
+- Action: filtered out
+
+## Conflicts
+
+### Sentence Length
+- Status: no_consensus
+- Variant A (concise): 2/3 sources
+- Variant B (elaborate): 1/3 sources
+- Recommendation: choose based on target content
+
+## Deduplication
+- Path deduplication: 0 files
+- Content hash deduplication: 0 files
+```
+
 ## No psmfiles/
 
 **Old location**: `psmfiles/` - **Deprecated**
