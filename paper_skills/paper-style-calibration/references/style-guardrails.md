@@ -1,228 +1,194 @@
 # Style Guardrails
 
-## Overview
-
-These guardrails define what can and cannot be migrated during style calibration. They are CRITICAL safety constraints.
-
 ## Core Principle
 
 ```
 Style changes must be target-grounded:
-Every rewritten sentence must preserve only facts, terms, citations, equations,
+Every rewritten sentence preserves only facts, terms, citations, equations,
 numbers, and claims already present in the target manuscript.
 ```
 
-## Prohibited Migrations
+## Three-Stage Safety
 
-### Content-Level Prohibitions
+### Stage 1: Profile (Safe)
 
-| Category | Specific Items | Reason |
-|----------|----------------|--------|
-| **Claims** | All claims, conclusions, assertions | Content belongs to target manuscript |
-| **Results** | Numerical values, percentages, comparisons | Scientific integrity |
-| **Methods** | Algorithm names, procedure details, parameter values | Technical accuracy |
-| **Datasets** | Dataset names, benchmark names, corpus identifiers | Factual identity |
-| **Metrics** | Metric names with specific values | Scientific integrity |
-| **Citations** | Citation keys, author names, paper references | Academic integrity |
-| **Equations** | Mathematical formulas, derivations, symbols | Technical precision |
-| **Definitions** | Term definitions, notation definitions | Scholarly accuracy |
+- Only reads source document
+- No modification to any file
+- Output is de-identified patterns only
 
-### Expression-Level Prohibitions
+### Stage 2: Diagnosis (Safe)
 
-| Category | Specific Items | Reason |
-|----------|----------------|--------|
-| **Unique phrasing** | Long n-grams (>6 words) from source | Plagiarism risk |
-| **Argument structures** | Proof sequences, reasoning chains | Content migration |
-| **Framing** | Specific problem framing, motivation angles | Content identity |
-| **Terminology** | Method names, system names, tool names from source | Not transferable |
-| **Acronyms** | Acronym expansions from source | May not apply to target |
-| **Limitations** | Limitation statements, failure cases | Honesty requirement |
-| **Future work** | Future direction statements from source | Not applicable |
+- Only reads target document
+- Generates analysis report
+- No modification to target
 
-### Structural Prohibitions
+### Stage 3: Restructure (Protected)
 
-| Category | Specific Items | Reason |
-|----------|----------------|--------|
-| **Paragraph order** | Argument/paragraph sequence from reference | Content structure |
-| **Contribution list** | Specific contribution framing | Content identity |
-| **Section structure** | Section organization from reference | Venue-specific |
-| **Figure/Table content** | Values, trends, observations in visuals | Factual content |
+- Copies target before modification
+- Modifies copy only
+- Original file untouched
 
-### Context-Level Prohibitions
+## Prohibited Changes
 
-| Category | Specific Items | Reason |
-|----------|----------------|--------|
-| **Ethics statements** | Ethics concerns from source | Manuscript-specific |
-| **Funding/Acknowledgement** | Any funding or acknowledgement content | Author-specific |
-| **Author contributions** | Contribution descriptions | Author-specific |
-| **Institution names** | Lab/university names from source | Identity |
-| **Product names** | Commercial tools, platforms from source | Not transferable |
+### Content Level
 
-## Allowed Migrations
+| Category | Prohibited | Reason |
+|----------|------------|--------|
+| Claims | All claims, conclusions | Content ownership |
+| Results | Numerical values, comparisons | Scientific integrity |
+| Methods | Algorithm details, parameters | Technical accuracy |
+| Datasets | Dataset names, benchmarks | Factual identity |
+| Citations | Citation keys, authors | Academic integrity |
+| Equations | Formulas, derivations | Technical precision |
 
-### Abstract Style Elements
+### Expression Level
 
-| Element | Migration Rules |
-|---------|-----------------|
-| **Voice preference** | Transfer ratio (first/third person, passive/active) |
-| **Sentence rhythm** | Transfer length distribution statistics |
-| **Connector density** | Transfer frequency preferences |
-| **Hedging style** | Transfer hedging/certainty ratio |
-| **Paragraph length** | Transfer average paragraph statistics |
-| **Topic sentence position** | Transfer structural preference |
+| Category | Prohibited | Reason |
+|----------|------------|--------|
+| Unique phrasing | >6 word sequences from source | Plagiarism risk |
+| Author features | Distinctive expressions | Identity protection |
+| Argument chains | Source reasoning sequences | Content migration |
+| Framing | Source problem angles | Content ownership |
 
-### Formatting Conventions
+### Structural Level
 
-| Element | Migration Rules |
-|---------|-----------------|
-| **Figure references** | "Fig. 1" vs "Figure 1" preference |
-| **Table references** | "Table 1" vs "Tbl. 1" preference |
-| **Citation format** | Numeric vs author-year display preference |
-| **Math notation** | Inline vs display preference (style only) |
+| Category | Prohibited | Reason |
+|----------|------------|--------|
+| Paragraph order | Source sequence | Content structure |
+| Section organization | Source outline | Venue-specific |
+| Contribution framing | Source presentation | Content identity |
 
-### Rhetorical Patterns (De-identified)
+## Allowed Changes
 
-| Pattern Type | Migration Rules |
-|--------------|-----------------|
-| **Motivation template** | Template only: "[DOMAIN] has seen progress in [TASK]." |
-| **Gap template** | Template only: "Existing methods struggle with [PROBLEM]." |
-| **Proposal template** | Template only: "This work proposes [METHOD]." |
-| **Result template** | Template only: "Results show [OUTCOME]." |
+### Structure
 
-Templates must have all content placeholders replaced with target manuscript content.
+- Move sequence adjustment (M1-M2-M3)
+- Paragraph reorganization
+- Gap framing strengthening
+- Contribution alignment
 
-## Reference Source Extra Restrictions
+### Expression
 
-When `source_kind=reference` (external paper), additional restrictions apply:
+- Voice adjustment (active/passive)
+- Sentence length modification
+- Connector density tuning
+- Hedging level calibration
 
-### Restricted Extractions
+### Format
 
-| What | Restriction |
-|------|-------------|
-| Sentence templates | NOT allowed—even de-identified |
-| Specific connector examples | NOT allowed |
-| Content-bearing rhetorical patterns | NOT allowed |
-| Paragraph opening examples | NOT allowed (content-adjacent) |
-| Hedging examples with context | NOT allowed |
+- Figure reference style
+- Table reference style
+- Citation format alignment
 
-### Allowed Extractions (Reference Source)
+## De-identification Requirement
 
-| What | Allowed Form |
-|------|--------------|
-| Voice statistics | Ratios only (e.g., "passive: 60%") |
-| Sentence length statistics | Distribution numbers only |
-| Connector frequency | Density number only (e.g., "0.08 per sentence") |
-| Hedging statistics | Ratios only |
-| Paragraph statistics | Averages only |
+All extracted patterns must be de-identified:
 
-The difference: `own` source can provide patterns with examples; `reference` source provides only abstract statistics.
+**Before**: "Our Transformer-XL achieves 94.5%"
+**After**: "The proposed [METHOD] achieves [METRIC]"
 
-## Guardrail Enforcement
+**Placeholder mapping**:
+- Method → `[METHOD]`
+- Dataset → `[DATASET]`
+- Metric → `[METRIC]`
+- Value → `[VALUE]`
+- Number → remove
+- Citation → remove
 
-### Pre-Application Check
+## Copy-Before-Modify Rule
 
-Before applying any style change:
+**Mandatory** for Stage 3:
 
-1. Does the change modify any factual content? → BLOCK
-2. Does the change introduce content from source? → BLOCK
-3. Does the change modify a citation? → BLOCK
-4. Does the change modify a number or value? → BLOCK
-5. Does the change modify an equation? → BLOCK
-6. Is the source_kind=reference and change uses content examples? → BLOCK
+1. Create `restructured/` directory
+2. Copy target file(s) to `restructured/`
+3. Modify copy only
+4. Original file never touched
 
-### Post-Application Check
-
-After applying changes:
-
-1. Verify all claims unchanged
-2. Verify all numbers unchanged
-3. Verify all citations unchanged
-4. Verify all equations unchanged
-5. Verify no source-specific terminology introduced
-6. Verify hedging matches evidence strength
-
-### Audit Checklist
-
-```markdown
-## Guardrail Audit
-
-- [ ] All original claims preserved
-- [ ] All numerical values preserved
-- [ ] All citation keys preserved
-- [ ] All equation content preserved
-- [ ] No source terminology introduced
-- [ ] No source framing adopted
-- [ ] No source argument structure copied
-- [ ] Hedging strength matches evidence
-- [ ] All changes are style-only
+**Single file**:
+```
+target.tex ──► restructured/target.style-restructured.tex
 ```
 
-## Edge Cases and Exceptions
+**Project directory**:
+```
+project/ ──► restructured/project-copy/
+```
 
-### When Guardrails Conflict
+## Pre-Modification Check
 
-| Situation | Resolution |
-|-----------|------------|
-| Style prefers active voice, but method description uses passive correctly | Keep passive (technical accuracy) |
-| Style prefers short sentences, but complex claim requires length | Keep length (content accuracy) |
-| Style prefers no hedging, but evidence is tentative | Keep hedging (intellectual honesty) |
-| Style prefers specific format, but venue requires different | Use venue format (submission requirement) |
+Before any change to copy:
 
-Priority order:
+1. Is this a factual claim? → Preserve exactly
+2. Is this a numerical value? → Preserve exactly
+3. Is this a citation? → Preserve exactly
+4. Is this an equation? → Preserve exactly
+5. Is this from source (not target)? → BLOCK
+
+## Post-Modification Check
+
+After changes to copy:
+
+1. All original claims preserved?
+2. All numbers unchanged?
+3. All citations intact?
+4. No source terminology introduced?
+5. No source phrasing copied?
+
+## N-gram Plagiarism Check
+
+After restructure, scan for similarity:
+
+**Block** (rewrite required):
+- 8+ consecutive words match source
+- 10+ words with 1-2 differences
+
+**Review** (manual check):
+- 5-7 word matches in same paragraph
+- Semantic + position + length similarity
+
+**Exclude**:
+- Fixed technical terms
+- Standard academic phrases
+- Common connector sequences
+
+## Error Handling
+
+If any stage fails:
+
+1. Preserve completed stages' outputs
+2. Update manifest.json with status
+3. Record error details
+4. Never touch original files
+5. Allow retry from failed stage
+
+## Priority Order
+
+When conflicts arise:
+
 ```
 Factual accuracy > Venue requirements > Style preferences
 ```
 
-### Section-Specific Exceptions
-
-| Section | Special Treatment |
-|---------|-------------------|
-| **Abstract** | Minimal style changes; venue-dependent format |
-| **Methods** | Preserve technical voice; avoid rhetorical changes |
-| **Theory** | No changes to math notation or proof structure |
-| **Limitations** | Keep exact honesty statements; no softening |
-| **Conclusion** | Minimal changes; venue-dependent structure |
-
-## Plagiarism Prevention
-
-### N-gram Check
-
-After calibration, scan for suspicious n-grams:
-
-1. Extract all 7+ word sequences from calibrated output
-2. Check against source document
-3. Flag any exact matches of 7+ words
-4. Flag any near-matches (1-2 word differences) of 10+ words
-
-If flagged:
-- Review the flagged section
-- Rewrite to break the similarity
-- Ensure content is genuinely target-grounded
-
-### Structural Similarity Check
-
-After calibration, check for structural copying:
-
-1. Compare paragraph sequence between source and target
-2. Compare argument flow (if similar domain)
-3. Flag if identical structural progression detected
-
-If flagged:
-- Review whether structure is genre-appropriate (common in academic writing)
-- If structure copied from reference, restructure target paragraphs
+**Examples**:
+- Style prefers active, but method needs passive → Keep passive
+- Style prefers short sentences, but claim needs length → Keep length
+- Style prefers no hedging, but evidence is tentative → Keep hedging
 
 ## Summary
 
 ```
-ALLOWED: voice ratios, sentence statistics, connector density, 
-         formatting preferences, de-identified templates
+ALLOWED:
+- Structure: Move sequence, paragraph organization
+- Expression: Voice, rhythm, connectors
+- Format: References, citations style
 
-BLOCKED: claims, numbers, citations, equations, methods, datasets,
-         source terminology, argument structure, unique phrasing,
-         limitations, future work, content-bearing patterns
+BLOCKED:
+- Content: Claims, results, methods, datasets
+- Expression: Source phrasing, unique sequences
+- Structure: Source order, organization
 
-EXTRA BLOCKED for reference sources: all templates, all examples,
-         all content-adjacent patterns
-
-PRIORITY: Facts > Venue > Style
+GUARANTEED:
+- Original files never modified
+- Changes only to copies in restructured/
+- All modifications target-grounded
 ```

@@ -2,268 +2,244 @@
 
 ## Overview
 
-Apply extracted style patterns to the target manuscript. This document defines how to modify prose while preserving all factual content.
+Apply extracted style profile to target paper through three-stage pipeline.
 
-## Application Principle
-
-**Core rule**: Style changes must be target-grounded. Every rewritten sentence must preserve only facts, terms, citations, equations, numbers, and claims already present in the target manuscript.
-
-## Application Pipeline
+## Three-Stage Pipeline
 
 ```
-Style Profile + Target Manuscript → Application Plan → Section-by-Section Rewrite → Guardrail Check
+Stage 1: Profile ──► Stage 2: Diagnosis ──► Stage 3: Restructure
 ```
 
-## Application Planning
+All three stages always execute. No mode selection.
 
-### Step 1: Section Scope Determination
+## Stage 1: Profile
 
-Default scope (prose-heavy sections):
+Already completed by style-extraction.md.
+
+**Input**: Source document
+**Output**: `profile/style_profile.md`, `profile/style_metrics.json`
+
+## Stage 2: Diagnosis
+
+Analyze target paper against style profile.
+
+### 2.1 Target Structure Mapping
+
+Map target's current Introduction structure:
+
+```yaml
+target_current_structure:
+  move_sequence: [M1, M2, M3, ...]
+  paragraph_functions: [...]
+  citation_usage: [...]
+```
+
+### 2.2 Gap Analysis
+
+Compare target vs. style profile:
+
+| Aspect | Target | Profile | Gap |
+|--------|--------|---------|-----|
+| Move sequence | [M1, M3] | [M1, M2, M3] | Missing M2 |
+| Research synthesis | Chronological | Thematic | Strategy mismatch |
+| Gap framing | Implicit | Explicit | Framing weak |
+| Contribution alignment | Unclear | Clear | Missing alignment |
+
+### 2.3 Prioritized Issues
+
+Generate prioritized modification plan:
+
+**High Priority**:
+- Missing Move 2 (gap establishment)
+- Unclear contribution-to-gap mapping
+- Weak problem framing
+
+**Medium Priority**:
+- Suboptimal research synthesis grouping
+- Inconsistent citation functions
+- Sentence rhythm deviations
+
+**Low Priority**:
+- Voice preferences (active/passive)
+- Connector density
+- Paragraph length variations
+
+### 2.4 Diagnosis Output
+
+**diagnosis/target_diagnosis.md**:
+
+```markdown
+# Target Diagnosis Report
+
+## Executive Summary
+Target paper deviates from style profile in 3 high-priority areas.
+
+## Current Structure
+- Move sequence: M1 → M3 (M2 missing)
+- Research synthesis: Chronological grouping
+- Gap framing: Implicit
+- Contribution alignment: Unclear
+
+## Gaps Identified
+
+### High Priority
+1. **Missing Move 2**: No explicit gap establishment
+   - Current: "Many methods exist..."
+   - Expected: "However, existing methods struggle with..."
+   - Location: Paragraph 2
+
+2. **Weak Contribution Alignment**: Contribution not mapped to specific gap
+   - Current: "We propose X..."
+   - Expected: "To address [GAP], we propose X..."
+
+### Medium Priority
+3. **Suboptimal Research Synthesis**: Chronological vs. thematic
+   - Current: "A (2020) did... B (2021) did..."
+   - Expected: "Recent approaches fall into two categories..."
+
+### Low Priority
+4. **Voice Preference**: Active vs. passive ratio
+5. **Connector Density**: Higher than profile
+
+## Modification Plan
+
+### Paragraph 2 (Restructure)
+- Add explicit gap statement
+- Connect to prior work limitations
+- Preview research need
+
+### Paragraph 3 (Enhance)
+- Strengthen contribution-to-gap mapping
+- Add evidence preview
+
+## Risks
+- Target paper's technical claims must be preserved
+- Do not add new claims or evidence
+- Only restructure existing content
+```
+
+**diagnosis/gap_analysis.json**:
+
+```json
+{
+  "target_structure": {...},
+  "gaps": [
+    {"severity": "high", "type": "missing_move", "move": "M2", "location": "para_2"},
+    {"severity": "high", "type": "alignment_weak", "element": "contribution_gap"}
+  ],
+  "modification_plan": [
+    {"action": "restructure", "paragraph": 2, "changes": [...]},
+    {"action": "enhance", "paragraph": 3, "changes": [...]}
+  ]
+}
+```
+
+## Stage 3: Restructure
+
+Create styled copy of target paper.
+
+### 3.1 File Copy Strategy
+
+**Single file target**:
+```
+my_paper.tex ──► restructured/my_paper.style-restructured.tex
+```
+
+**Project directory target**:
+```
+project/
+  ├── main.tex
+  ├── sections/
+  └── figures/
+  
+──► restructured/
+      ├── main.style-restructured.tex
+      ├── sections/
+      └── figures/
+```
+
+**Copy rules**:
+- Copy to `restructured/` before any modification
+- Original file untouched
+- Preserve all relative paths
+- Exclude `.git/`, `paper-style/`
+
+### 3.2 Modification Scope
+
+**Default scope** (prose sections):
 - Introduction
 - Related Work / Related Works
-- Results / Experimental Results
-- Discussion (interpretive prose only)
+- Results (interpretive prose)
+- Discussion
 
-Excluded from style calibration:
-- Abstract (formulaic, venue-dependent)
-- Methods (technical precision required)
-- Theory / Preliminaries (mathematical precision)
-- Experiments Setup (technical precision)
-- Conclusion (venue-dependent structure)
-- Limitations (required honesty statements)
+**Excluded** (technical precision):
+- Abstract
+- Method
+- Theory / Preliminaries
+- Experiments Setup
+- Conclusion
+- Limitations
 
-User can override scope with `scope=introduction,results`.
+User can override in natural language.
 
-### Step 2: Change Inventory
+### 3.3 Modification Types
 
-For each section, identify potential changes:
+**Type 1: Restructure** (major)
+- Reorganize paragraph flow
+- Add missing Move sections
+- Strengthen contribution-gap alignment
 
-| Change Type | Example | Permitted |
-|-------------|---------|-----------|
-| Voice adjustment | "We propose" → "A method is proposed" | Yes |
-| Sentence length | Split long sentences, combine short | Yes |
-| Connector adjustment | Remove redundant "Furthermore" | Yes |
-| Hedging adjustment | "demonstrates" → "suggests" (if evidence allows) | Yes (with caution) |
-| Paragraph restructuring | Reorganize topic sentences | Yes |
-| Formatting change | "Figure 1" → "Fig. 1" | Yes |
-| Content change | Add new claim or remove existing | NO |
-| Terminology change | Rename method or dataset | NO |
-| Citation change | Add/remove/modify citations | NO |
-| Number change | Modify experimental values | NO |
-| Math change | Simplify or modify equations | NO |
+**Type 2: Enhance** (medium)
+- Strengthen gap framing
+- Improve research synthesis grouping
+- Adjust contribution statement
 
-### Step 3: Prioritize Changes
+**Type 3: Refine** (minor)
+- Adjust voice (active/passive)
+- Modify sentence rhythm
+- Tune connector density
 
-Apply changes in this order:
+### 3.4 Modification Priority
 
-1. **Voice adjustments** (most structural impact)
-2. **Sentence rhythm** (combine/split sentences)
-3. **Transition cleanup** (remove redundant connectors)
-4. **Paragraph structure** (reorganize topic sentences)
-5. **Formatting alignment** (figure/table references)
-6. **Hedging refinement** (only if evidence strength unchanged)
+Apply in order:
+1. **Structure first**: Move sequence, paragraph organization
+2. **Content second**: Gap framing, contribution alignment
+3. **Style last**: Voice, rhythm, connectors
 
-## Voice Application
+### 3.5 Safety Constraints
 
-### Passive Voice Preference
+**Before any change**:
+- Does this modify factual content? → BLOCK
+- Does this add new claims? → BLOCK
+- Does this modify numbers/citations/equations? → BLOCK
 
-When style profile shows passive preference:
+**After changes**:
+- Verify all claims preserved
+- Verify all numbers unchanged
+- Verify all citations intact
 
-**Before**:
-> "We observe that the model performs well on small datasets."
+### 3.6 Restructure Output
 
-**After**:
-> "Strong performance on small datasets was observed."
+**File**: `restructured/<stem>.style-restructured<ext>`
 
-**Rules**:
-- Keep passive for methods/procedures ("The model was trained...")
-- Convert active claims to passive when appropriate
-- Do NOT change agency for responsibility-bearing statements
+**Content**: Modified copy with style adjustments applied.
 
-### Third-Person Preference
+## Execution Order
 
-When style profile shows third-person preference:
+```
+1. Profile (from source)
+   └── profile/style_profile.md
+   └── profile/style_metrics.json
 
-**Before**:
-> "We believe this approach will be useful for future research."
+2. Diagnosis (target vs profile)
+   └── diagnosis/target_diagnosis.md
+   └── diagnosis/gap_analysis.json
 
-**After**:
-> "This approach may prove useful for future research applications."
+3. Restructure (copy and modify)
+   └── restructured/<target>.style-restructured.*
 
-**Rules**:
-- Remove "we" from non-essential claims
-- Keep "we" for genuine author actions ("We conducted experiments...")
-- Replace "We propose" with "The proposed method" or "This work proposes"
+4. Manifest (record all)
+   └── manifest.json
+```
 
-## Sentence Length Application
-
-### Long Sentence Handling
-
-When target sentence exceeds style profile median by 2x:
-
-**Before** (35 words):
-> "The experimental results demonstrate that our proposed framework achieves significant improvements across multiple benchmark datasets, particularly showing strong performance on tasks requiring complex reasoning and multi-step inference capabilities."
-
-**After** (split):
-> "Experimental results show significant improvements across multiple benchmarks. Particularly strong performance was observed on tasks requiring complex reasoning and multi-step inference."
-
-**Rules**:
-- Split at natural clause boundaries
-- Maintain logical flow between split sentences
-- Do NOT lose any factual content
-
-### Short Sentence Handling
-
-When too many consecutive short sentences (<10 words):
-
-**Before**:
-> "We tested the model. It worked well. Results were good. We compared baselines."
-
-**After** (combine):
-> "Testing confirmed the model's effectiveness, with favorable results compared to baselines."
-
-**Rules**:
-- Combine sentences sharing a logical theme
-- Use appropriate connectors (but avoid over-connectorizing)
-- Preserve all factual elements
-
-## Transition Application
-
-### Connector Cleanup
-
-When style profile shows explicit connector overuse:
-
-**Before**:
-> "Furthermore, we developed a new algorithm. Additionally, we tested it on three datasets. Moreover, the results were positive. In addition, we compared with baselines."
-
-**After**:
-> "We developed a new algorithm and tested it on three datasets. Results were positive compared to baselines."
-
-**Rules**:
-- Remove redundant connectors in consecutive sentences
-- Keep connectors when they serve genuine logical transitions
-- Prefer implicit transitions via content flow
-- Retain connectors for contrast ("However") when meaning requires it
-
-### Paragraph Opening Variation
-
-When style profile shows connector-heavy openings:
-
-Replace with:
-- Subject-first: "The proposed method addresses..."
-- Observation-first: "Performance gains were observed when..."
-- Context-first: "In the domain of X, prior work has..."
-- Question-based: "A key question is whether..."
-
-## Hedging Application
-
-### Hedging Adjustment Rules
-
-**Strengthen hedging** (when evidence is tentative):
-- "demonstrates" → "suggests"
-- "proves" → "indicates"
-- "clearly shows" → "shows"
-
-**Reduce hedging** (when evidence is strong):
-- "may suggest" → "suggests"
-- "possibly indicates" → "indicates"
-- "could potentially" → "can"
-
-**Critical rule**: Only adjust hedging when the evidence strength in the target manuscript genuinely supports the change. Never:
-- Strengthen a claim beyond evidence
-- Reduce hedging for unsupported assertions
-- Change hedging for method claims (keep neutral)
-
-### Evidence-Based Hedging Matrix
-
-| Evidence Type | Appropriate Hedging |
-|---------------|---------------------|
-| Statistical significance (p<0.05) | "demonstrates", "confirms" |
-| Moderate improvement | "shows", "indicates" |
-| Qualitative observation | "suggests", "appears" |
-| Hypothesis/plausibility | "may", "could" |
-| No direct evidence | Keep original hedging |
-
-## Paragraph Structure Application
-
-### Topic Sentence Adjustment
-
-When style profile shows topic-first preference:
-
-**Before** (embedded topic):
-> "After running extensive experiments, we found that the model achieved 95% accuracy, demonstrating strong capability in the target task."
-
-**After** (topic-first):
-> "The model demonstrates strong capability in the target task. Extensive experiments achieved 95% accuracy."
-
-**Rules**:
-- Position main claim/assertion at paragraph start
-- Follow with supporting evidence
-- Do NOT reorder chronological procedures
-
-### Concluding Sentence Handling
-
-When style profile discourages concluding sentences:
-
-**Before**:
-> "The results improved by 15%. This demonstrates the effectiveness of our approach."
-
-**After**:
-> "The results improved by 15%." (Remove redundant conclusion)
-
-**Rules**:
-- Remove conclusions that merely restate the evidence
-- Keep conclusions that add interpretation or implication
-- Keep venue-required summary structures
-
-## Formatting Application
-
-### Reference Style Alignment
-
-When style profile shows specific reference formats:
-
-**Figure references**:
-- Target: "Fig. 1" → Apply if style profile prefers abbreviated
-- Target: "Figure 1" → Apply if style profile prefers full
-
-**Table references**:
-- Target: "Table 1" → Apply if style profile prefers full
-- Target: "Tbl. 1" → Apply if style profile prefers abbreviated
-
-**Citation style** (LaTeX):
-- Numeric "[1]" vs Author-year "(Smith, 2020)" → Align with style profile
-- For LaTeX, modify `\cite{}` to appropriate citation command if needed
-
-**Important**: Do NOT change citation content, keys, or bibliography entries—only the reference format in prose.
-
-## Scope Control
-
-### Per-Section Application Limits
-
-Apply style changes proportionally to section size:
-
-| Section | Max Changes | Notes |
-|---------|-------------|-------|
-| Introduction | 30-50% of sentences | Heavy prose, style matters most |
-| Related Work | 20-30% of sentences | Balance style with citation accuracy |
-| Results | 15-25% of sentences | Preserve precise claims |
-| Discussion | 30-40% of sentences | Interpretive prose, style applies well |
-
-### Change Density Rule
-
-Do NOT modify more than:
-- 40% of sentences in any section
-- 2 consecutive sentences without preserving at least one
-- Any sentence containing critical numbers or equations
-
-## Post-Application Verification
-
-After applying changes, verify:
-
-1. **Content preservation**: All facts, numbers, citations, claims intact
-2. **LaTeX integrity**: All commands, environments, math preserved
-3. **Logical flow**: Section still reads coherently
-4. **Evidence alignment**: Hedging matches evidence strength
-5. **Style consistency**: Changes align with style profile
-
-If any check fails, revert changes and reassess.
+All stages always execute. No user selection.

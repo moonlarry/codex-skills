@@ -1,6 +1,6 @@
 ---
 name: paper-style-calibration
-description: Calibrate academic writing style based on external samples (user's previous papers, reference papers, or style descriptions). Extract style patterns and apply them to the target manuscript while preserving all factual content. Use when the user wants their paper to match a specific style from reference materials. Supports PDF, TeX, Markdown, and Word inputs. Prefer editable formats (TeX, Markdown, Word) over PDF when available.
+description: Calibrate academic writing style based on external samples. Extract complete style profile from reference, diagnose target paper, and generate restructured copy. Always performs full analysis (deep) and complete pipeline (profile → diagnosis → restructure). Outputs to ./paper-style/runs/<timestamp>-<target>/.
 allowed-tools:
   - Read
   - Write
@@ -15,116 +15,158 @@ allowed-tools:
 
 ## Overview
 
-Use this skill to calibrate the writing style of a target manuscript based on external style samples. This is NOT content generation or formal polishing—it is style alignment after the paper's substance is already written.
+Use this skill to calibrate the writing style of a target manuscript based on external style samples.
 
-**When to use**:
-- User has a previous paper and wants the current paper to match its style
-- User wants to imitate the style of a reference paper (PDF/TeX/Markdown/Word)
-- User provides a style description (e.g., "prefer third-person passive, short sentences")
-- User has an existing style guide file
+**What it does**:
+1. **Profile**: Extract complete style profile from reference paper/source
+2. **Diagnosis**: Analyze target paper against style profile, identify gaps
+3. **Restructure**: Create a copy of target paper with style adjustments applied
 
-**When NOT to use**:
-- The paper needs formal academic polishing → use `paper-refine-special-en` or `paper-polish-workflow`
-- The paper needs human-style post-polish → use `paper-polish-human`
-- The paper needs content generation → use `paper-write` or `paper-gen`
+**Core guarantee**: Original files are never modified. All outputs go to `./paper-style/runs/<run-id>/`.
 
-## Pre-Edit Reminder
+## When to Use
 
-Before starting, remind the user:
+- Want to make current paper match style of reference paper
+- Want to apply style patterns from previous work to new paper
+- Want structured diagnosis of writing style issues
 
-```text
-This skill calibrates writing style based on external samples. For best results:
-1. Prefer editable formats (TeX, Markdown, Word) over PDF—they preserve structure and formatting.
-2. If only PDF is available, the skill will extract text, but some formatting may be lost.
-3. Run formal polishing (paper-refine-special-en) BEFORE style calibration for best results.
+## When NOT to Use
+
+- Need formal academic polishing → use `paper-refine-special-en` first
+- Need light humanization after calibration → use `paper-polish-human` after
+- Only want to check style without restructuring → this skill always restructures
+
+## Input
+
+```
+/paper-style-calibration source=<path> target=<path>
 ```
 
-Proceed directly after the reminder.
+**Parameters**:
+- `source`: Reference paper/style source (PDF/TeX/Markdown/Word)
+- `target`: Target paper to calibrate (TeX/Markdown recommended)
 
-## Input Format Priority
+**Format auto-detection** (no need to specify):
+- `.tex` → TeX
+- `.md` → Markdown
+- `.docx/.doc` → Word
+- `.pdf` → PDF (last resort, may lose formatting)
 
-When the user provides style source files, prioritize in this order:
+System will ask if format cannot be determined.
 
-| Priority | Format | Notes |
-|:--------:|--------|-------|
-| 1 (Best) | **TeX (.tex)** | Preserves LaTeX commands, structure, math notation |
-| 2 | **Markdown (.md)** | Clean text, easy to analyze |
-| 3 | **Word (.docx/.doc)** | Requires conversion; structure preserved |
-| 4 | **PDF (.pdf)** | Last resort; text extraction may lose formatting |
+## Execution Pipeline
 
-If the user provides multiple formats, ask which to use or select the highest priority format automatically.
+Fixed three-stage execution:
 
-## Workflow
+```
+Stage 1: Profile ──► Stage 2: Diagnosis ──► Stage 3: Restructure
+```
 
-1. **Identify input type**:
-   - `source=path/to/file`: Style source file (PDF/TeX/Markdown/Word)
-   - `source_kind=own|reference`: Whether it's user's own paper or a reference paper
-   - `description="..."`: Text-based style description
-   - `guide=path/to/STYLE_GUIDE.md`: Pre-existing style guide
-   - `target=path/to/file`: Target manuscript to calibrate
+### Stage 1: Profile
 
-2. **Give the pre-edit reminder**, then proceed.
+Extract complete style profile from source:
+- Introduction rhetorical architecture (Move 1-3)
+- Research status synthesis patterns
+- Gap/problem framing patterns
+- Contribution-response alignment
+- Voice, sentence rhythm, transitions (secondary)
 
-3. **Read style guardrails**: `references/style-guardrails.md` (CRITICAL—defines what can/cannot be migrated).
+**Output**: `profile/style_profile.md`, `profile/style_metrics.json`
 
-4. **Extract or load style profile**:
-   - If `source=` provided: Read `references/style-extraction.md` and extract style.
-   - If `description=` provided: Read `references/intake-and-sources.md` and parse description.
-   - If `guide=` provided: Load the existing style guide directly.
+### Stage 2: Diagnosis
 
-5. **Plan style application**: Read `references/style-application.md` to determine which sections and elements to calibrate.
+Analyze target paper against style profile:
+- Map target's current structure
+- Identify gaps and deviations
+- Generate prioritized modification plan
 
-6. **Apply style changes**: Modify only allowed elements (voice, sentence rhythm, transitions, formatting) while preserving all factual content.
+**Output**: `diagnosis/target_diagnosis.md`, `diagnosis/gap_analysis.json`
 
-7. **Run guardrail check**: Verify no prohibited content was migrated.
+### Stage 3: Restructure
 
-8. **Generate outputs**: Follow `references/output-format.md`.
+Create styled copy of target paper:
+- Copy target to `restructured/<stem>.style-restructured<ext>`
+- Apply style adjustments to copy only
+- Original file untouched
+
+**Output**: `restructured/<target>.style-restructured.*`
+
+## Output Directory Structure
+
+All outputs go to current working directory:
+
+```
+./paper-style/
+└── runs/
+    └── 20260608-153012-my_paper/          # <timestamp>-<target_slug>
+        ├── manifest.json                   # Run metadata & status
+        ├── profile/                        # Stage 1: Style profile
+        │   ├── style_profile.md
+        │   └── style_metrics.json
+        ├── diagnosis/                      # Stage 2: Diagnosis
+        │   ├── target_diagnosis.md
+        │   └── gap_analysis.json
+        └── restructured/                   # Stage 3: Styled copy
+            └── my_paper.style-restructured.tex
+```
+
+**Naming**:
+- `target_slug`: From target file stem, safe characters only
+- Conflicts: Append `-02`, `-03` if same second
+- Runs are immutable, old runs preserved
 
 ## Hard Constraints
 
-- **Preserve all factual content**: No changes to claims, numbers, citations, equations, definitions, experimental results, or technical terminology.
-- **No content migration**: Do not copy methods, arguments, framing, or any substantive content from the style source.
-- **Style-only changes**: Only modify voice, sentence rhythm, transition style, paragraph structure, and formatting conventions.
-- **Target-grounded**: Every rewritten sentence must contain only facts already present in the target manuscript.
-- **Hedging safety**: Adjust hedging only when evidence strength remains unchanged; never strengthen claims beyond evidence.
+1. **Never modify original files**
+   - Target paper copied before any modification
+   - Original remains unchanged
 
-## Output Rules
+2. **Style-only changes**
+   - Only modify voice, structure, rhythm, transitions
+   - Preserve all factual content: claims, numbers, citations, equations
 
-Use the structure in `references/output-format.md`. Generate style profile files in `psmfiles/` directory.
+3. **No content migration**
+   - Do not copy methods, arguments, or specific content from source
+   - Extract only abstract, de-identified patterns
+
+4. **Target-grounded**
+   - Every change must use facts already in target paper
+   - Do not introduce new claims, examples, or evidence
 
 ## Relationship with Other Skills
 
 | Skill | Relationship |
 |-------|-------------|
-| `paper-refine-special-en` | Run BEFORE style calibration for formal academic polishing |
-| `paper-polish-human` | Run AFTER style calibration for optional light humanization |
-| `paper_style_mimic` | Provides extraction mechanism; this skill is the workflow layer |
-
-**Important**: This skill is NOT a replacement for formal academic polishing. It only calibrates style based on external samples—it does not fix logic, structure, or academic expression. Always run `paper-refine-special-en` or `paper-polish-workflow` BEFORE style calibration for best results.
+| `paper-refine-special-en` | Run **BEFORE** this skill for formal polishing |
+| `paper-polish-human` | Run **AFTER** this skill for optional light humanization |
 
 **Recommended pipeline**:
 ```
 paper-refine-special-en → paper-style-calibration → paper-polish-human (optional)
 ```
 
-- `paper-refine-special-en`: Fixes formal academic expression, logic, and structure
-- `paper-style-calibration`: Aligns writing style to external sample (style-only, no content changes)
-- `paper-polish-human`: Optional light humanization (must respect style guide constraints)
+## What This Skill Does NOT Do
 
-## Source Kind Implications
+- Does NOT provide `depth` parameter (always full analysis)
+- Does NOT provide `mode` parameter (always full pipeline)
+- Does NOT modify original files (creates copies)
+- Does NOT generate output to `psmfiles/` (uses `paper-style/`)
+- Does NOT require `source_kind` (auto-detects format)
 
-| source_kind | Extraction Depth | Restrictions |
-|-------------|-----------------|--------------|
-| `own` | Full style profile allowed | Still cannot migrate claims/results |
-| `reference` | Only abstract rhetorical patterns | Maximum guardrails; no sentence-level patterns from reference |
+## Error Handling
 
-**Default safety policy**: If `source_kind` is not explicitly declared, treat as `reference` (most restrictive). This prevents accidental content migration from unspecified sources.
+If any stage fails:
+- Previous stages' outputs preserved
+- `manifest.json` updated with `failed` or `partial` status
+- Error details recorded in `manifest.json`
+- Original files never touched
 
-When `source_kind=reference` (or defaulted), apply extra caution:
-- Extract only high-level patterns (voice preference, average sentence length, transition density)
-- Do NOT extract specific phrasings or sentence templates
-- Do NOT retain any content-bearing patterns from the reference paper
+## Example Usage
 
-Explicit declaration required:
-- Use `source_kind=own` only when the source is the user's own previous paper
-- Use `source_kind=reference` when the source is any external paper
+```
+# Basic usage
+/paper-style-calibration source=reference.tex target=my_paper.tex
+
+# Output will be at:
+# ./paper-style/runs/20260608-153012-my_paper/
+```

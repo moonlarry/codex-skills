@@ -2,293 +2,211 @@
 
 ## Overview
 
-Extract writing style patterns from source documents. This document defines what to extract and how to process it safely.
+Extract complete style profile from source document. This is always full analysis (no depth levels).
 
 ## Extraction Pipeline
 
 ```
-Source Document → Text Extraction → Style Analysis → De-identification → Style Profile
+Source Document → Text Extraction → Full Analysis → De-identification → Style Profile
 ```
 
-## What to Extract
+## Core Extraction Dimensions
 
-### 1. Voice and Agency Patterns
+### 1. Introduction Rhetorical Architecture (Primary)
 
-**Extract**:
-- First-person vs. third-person ratio
-- Active vs. passive voice ratio
-- Agency attribution patterns ("We observe" vs. "It was observed")
+Extract Move 1-3 structure:
 
-**Output format**:
+**Move 1: Establish Territory**
+- Field importance statements
+- Prior progress summary
+- Thematic review patterns
+
+**Move 2: Establish Niche (Gap)**
+- Limitation identification
+- Gap type (data/method/theory/evaluation)
+- Problem framing structure
+
+**Move 3: Occupy Niche**
+- Proposal introduction
+- Contribution statements
+- Evidence preview patterns
+
+**Output**:
+```yaml
+introduction_architecture:
+  move_sequence: [M1, M1, M2, M3, M3]
+  move_variants: [...]
+  confidence: 0.85
+```
+
+### 2. Research Status Synthesis
+
+Extract how source paper summarizes existing work:
+
+```yaml
+research_status_synthesis:
+  grouping_strategy: thematic | chronological | method_family
+  citation_function:
+    background: ratio
+    evidence: ratio
+    contrast: ratio
+    gap_support: ratio
+  summary_pattern: progress_to_boundary | taxonomy_to_gap | consensus_to_open
+```
+
+### 3. Gap Framing Patterns
+
+Extract how problems are framed:
+
+```yaml
+gap_framing:
+  gap_type:
+    data_gap: frequency
+    method_gap: frequency
+    theory_gap: frequency
+    evaluation_gap: frequency
+  structure_pattern: prior_success -> remaining_limitation -> research_need
+```
+
+### 4. Contribution-Response Alignment
+
+Extract how contributions map to gaps:
+
+```yaml
+contribution_alignment:
+  gap_to_contribution_mapping: [...]
+  evidence_preview_type:
+    experiments: ratio
+    theory: ratio
+    framework: ratio
+    dataset: ratio
+```
+
+### 5. Secondary Dimensions (Surface Style)
+
+Voice and sentence patterns (secondary priority):
+
 ```yaml
 voice_profile:
   first_person_ratio: 0.15
   third_person_ratio: 0.85
   passive_ratio: 0.60
   active_ratio: 0.40
-  preferred_pattern: "third-person passive"
-```
 
-### 2. Sentence Length Distribution
-
-**Extract**:
-- Word count per sentence for each section type
-- Median, mean, standard deviation
-- Short/medium/long sentence ratios
-
-**Output format**:
-```yaml
 sentence_metrics:
-  introduction:
-    median: 18
-    mean: 19.5
-    std: 4.2
-    short_ratio: 0.20  # <12 words
-    medium_ratio: 0.55 # 12-25 words
-    long_ratio: 0.25   # >25 words
-  methods:
-    median: 22
-    mean: 24.1
-    std: 6.8
-  results:
-    median: 16
-    mean: 17.2
-    std: 3.5
-```
+  median_length: 18
+  mean_length: 19.5
+  short_ratio: 0.20
+  medium_ratio: 0.55
+  long_ratio: 0.25
 
-### 3. Transition and Connector Patterns
-
-**Extract**:
-- Frequency of explicit connectors (However, Furthermore, Moreover, Additionally, Therefore, Thus, Specifically)
-- Implicit transition patterns (direct continuation, juxtaposition)
-- Paragraph opening patterns
-
-**Output format**:
-```yaml
 transition_profile:
-  explicit_connector_density: 0.08  # per sentence
-  top_connectors:
-    - "However": 0.25
-    - "Furthermore": 0.15
-    - "Therefore": 0.10
+  explicit_connector_density: 0.08
   implicit_transition_ratio: 0.45
-  paragraph_opening_patterns:
-    - "connector_first": 0.30
-    - "subject_first": 0.40
-    - "observation_first": 0.30
-```
 
-### 4. Hedging and Certainty Patterns
-
-**Extract**:
-- Hedging verb frequency (suggest, indicate, may, might, appear, seem)
-- Certainty verb frequency (demonstrate, confirm, prove, establish)
-- Qualifier frequency (potentially, possibly, likely, clearly, obviously)
-
-**Output format**:
-```yaml
 hedging_profile:
   hedging_density: 0.12
   certainty_density: 0.08
-  common_hedges:
-    - "suggests": 0.30
-    - "indicates": 0.25
-    - "may": 0.20
-  common_certainties:
-    - "demonstrates": 0.40
-    - "shows": 0.35
-  hedging_style: "moderate"  # light | moderate | heavy
+  hedging_style: moderate
 ```
 
-### 5. Paragraph Structure Patterns
+## De-identification Rules
 
-**Extract**:
-- Average paragraph length (sentences per paragraph)
-- Topic sentence position (first, second, embedded)
-- Concluding sentence presence
-- Evidence-to-claim ratio
+All extracted patterns must be de-identified:
 
-**Output format**:
-```yaml
-paragraph_profile:
-  avg_sentences_per_paragraph:
-    introduction: 5.2
-    methods: 4.8
-    results: 4.1
-  topic_sentence_position:
-    first: 0.70
-    second: 0.20
-    embedded: 0.10
-  concluding_sentence_presence: 0.40
-```
-
-### 6. Formatting Conventions
-
-**Extract**:
-- Figure reference style ("Fig. 1" vs "Figure 1")
-- Table reference style ("Table 1" vs "Tbl. 1")
-- Citation style ("[1]" vs "(Author, Year)")
-- Math notation patterns
-
-**Output format**:
-```yaml
-formatting_profile:
-  figure_reference: "Fig. N"
-  table_reference: "Table N"
-  citation_style: "numeric"  # numeric | author_year
-  inline_math_style: "$...$"
-  display_math_style: "\\begin{equation}"
-```
-
-## What NOT to Extract
-
-**Prohibited extraction items**:
-- Specific method names or algorithm names
-- Dataset names or benchmark names
-- Metric names with specific values
-- Numerical results or statistics
-- Citation keys or author names
-- Equation content or formulas
-- Claim structures with specific content
-- Unique phrasings or long n-grams (>6 words)
-- Argument sequences or proof structures
-- Limitation or future work content
-- Any content-bearing rhetorical patterns
-
-## De-identification Process
-
-All extracted patterns must be de-identified before storage:
-
-### Sentence Template De-identification
+### Template De-identification
 
 **Before**:
-> "Our Transformer-XL model achieves 94.5% accuracy on WikiText-103, surpassing the previous SOTA of 89.2%."
+> "Our Transformer-XL achieves 94.5% on WikiText-103"
 
-**After de-identification**:
-> "The proposed [METHOD] model achieves [METRIC] on [DATASET], surpassing the previous [BENCHMARK_REF]."
+**After**:
+> "The proposed [METHOD] achieves [METRIC] on [DATASET]"
 
-**Rules**:
-1. Replace method names with `[METHOD]`
-2. Replace dataset names with `[DATASET]`
-3. Replace specific metrics/values with `[METRIC]` or `[VALUE]`
-4. Replace benchmark references with `[BENCHMARK_REF]`
-5. Remove all numerical values
-6. Remove all citation keys
-7. Preserve rhetorical structure only
+**Replacement mapping**:
+| Type | Placeholder |
+|------|-------------|
+| Method name | `[METHOD]` |
+| Dataset name | `[DATASET]` |
+| Metric/Value | `[METRIC]` / `[VALUE]` |
+| Benchmark | `[BENCHMARK_REF]` |
+| Specific numbers | Remove |
+| Citation keys | Remove |
 
 ### Rhetorical Pattern Extraction
 
-Extract patterns based on function, not content:
+Extract by function, not content:
 
-| Pattern Function | Example Template |
-|------------------|------------------|
-| **Motivation statement** | "[DOMAIN] has witnessed significant progress in [TASK]." |
-| **Gap identification** | "However, existing approaches struggle with [PROBLEM]." |
-| **Proposal introduction** | "In this work, we propose [METHOD] to address [PROBLEM]." |
-| **Result framing** | "Experimental results demonstrate that [METHOD] achieves [OUTCOME]." |
-| **Comparison setup** | "Compared to [BASELINE], our approach shows [ADVANTAGE]." |
-| **Limitation acknowledgment** | "A limitation of this work is [LIMITATION]." |
+| Function | Template |
+|------------|----------|
+| Motivation | "[DOMAIN] has witnessed progress in [TASK]" |
+| Gap | "Existing approaches struggle with [PROBLEM]" |
+| Proposal | "This work proposes [METHOD] for [PROBLEM]" |
+| Result | "[METHOD] achieves [OUTCOME] on [DATASET]" |
 
-## Source Kind Restrictions
+## What NOT to Extract
 
-### When `source_kind=own`
-
-- Full extraction allowed
-- Sentence templates can be retained (de-identified)
-- Paragraph structure patterns can be retained
-- Formatting conventions can be retained
-
-### When `source_kind=reference`
-
-**Restricted to abstract patterns only**:
-
-- Voice ratios (first/third person, passive/active)
-- Sentence length distributions (statistics only, no templates)
-- Transition density (connector frequency, no specific examples)
-- Hedging ratios (statistics only)
-- Paragraph structure statistics (no patterns)
-
-**Do NOT extract from reference**:
-- Any sentence templates (even de-identified)
-- Specific connector usage examples
-- Any content-adjacent patterns
-- Paragraph opening patterns with content hints
+**Prohibited**:
+- Specific method names (keep as `[METHOD]`)
+- Dataset names (keep as `[DATASET]`)
+- Numerical results
+- Citation keys or author names
+- Equation content
+- Unique phrasings (>6 words)
+- Argument sequences
+- Limitation statements
+- Future work content
 
 ## Output Files
 
-Generate these files in `psmfiles/`:
+Generated in `profile/`:
 
-### STYLE_GUIDE.md
+### style_profile.md
 
 ```markdown
-# Style Guide
+# Style Profile
 
-## 1. Voice and Tone
-- Preferred voice: [third-person passive]
-- First-person usage: [rare/moderate/common]
-- Active voice exceptions: [when agent is important]
+## Introduction Architecture
+- Move sequence: ...
+- Confidence: ...
 
-## 2. Sentence Rhythm
-- Target median sentence length: [N words]
-- Section-specific targets:
-  - Introduction: [N]
-  - Methods: [N]
-  - Results: [N]
-- Short sentence allowance: [percentage]
+## Research Status Synthesis
+- Grouping strategy: ...
+- Citation functions: ...
 
-## 3. Transitions
-- Connector density: [low/medium/high]
-- Preferred connectors: [list]
-- Implicit transition ratio: [percentage]
+## Gap Framing
+- Gap types: ...
+- Structure pattern: ...
 
-## 4. Hedging
-- Hedging style: [light/moderate/heavy]
-- Preferred hedge verbs: [list]
-- Certainty verbs for strong evidence: [list]
+## Contribution Alignment
+- Gap-to-contribution mapping: ...
+- Evidence preview: ...
 
-## 5. Paragraph Structure
-- Target paragraph length: [N sentences]
-- Topic sentence position: [first/second/embedded]
-- Concluding sentence usage: [yes/no/optional]
+## Voice & Rhythm (Secondary)
+- Voice preference: ...
+- Sentence metrics: ...
 
-## 6. Formatting
-- Figure references: [style]
-- Table references: [style]
-- Citation format: [style]
+## De-identified Templates
+- Motivation: ...
+- Gap: ...
+- Proposal: ...
 ```
 
-### STYLE_METRICS.json
+### style_metrics.json
 
+Structured data for programmatic use:
 ```json
 {
-  "voice": { ... },
-  "sentence_length": { ... },
-  "transitions": { ... },
-  "hedging": { ... },
-  "paragraphs": { ... },
-  "formatting": { ... }
+  "introduction_architecture": {...},
+  "research_status_synthesis": {...},
+  "gap_framing": {...},
+  "contribution_alignment": {...},
+  "voice": {...},
+  "sentence_metrics": {...}
 }
 ```
 
-### RHETORICAL_PATTERNS.md
+## Extraction Guarantee
 
-```markdown
-# Rhetorical Patterns (De-identified)
-
-## Motivation Patterns
-- [TEMPLATE_1]
-- [TEMPLATE_2]
-
-## Gap Patterns
-- [TEMPLATE_1]
-- [TEMPLATE_2]
-
-## Proposal Patterns
-- [TEMPLATE_1]
-
-## Result Patterns
-- [TEMPLATE_1]
-- [TEMPLATE_2]
-
-Note: These patterns are de-identified templates. Replace placeholders with target manuscript content.
-```
+- Always full analysis (no depth levels)
+- Always de-identified (no source-specific content)
+- Always abstract patterns (no sentence-level extraction)
