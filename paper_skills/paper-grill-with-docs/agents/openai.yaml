@@ -1,0 +1,6 @@
+interface:
+  display_name: "Paper Grill with Docs"
+  short_description: "Reconcile final paper claims with audited evidence"
+  default_prompt: "Use $paper-grill-with-docs to reconcile this completed paper's Conclusion claims with its evidence."
+policy:
+  allow_implicit_invocation: false

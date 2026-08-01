@@ -1,0 +1,6 @@
+interface:
+  display_name: "Paper Grill Me"
+  short_description: "Test a paper idea before method design or drafting"
+  default_prompt: "Use $paper-grill-me to test this research idea one decision at a time and record the verdict."
+policy:
+  allow_implicit_invocation: false

@@ -37,11 +37,12 @@
 
 ### 2. paper_skills 文件夹 — 论文相关的 Skills 📚
 
-当前包含 **7 个论文写作模块、28 个可触发 Skills**，每个模块对应论文生产中的一段具体流程。迁入的论文工作流共享 `paper_skills/shared-references/` 下的写作、引用、审计和输出协议，并统一使用相对路径引用这些协议。
+当前包含 **7 个论文写作模块、30 个可触发 Skills**，每个模块对应论文生产中的一段具体流程。迁入的论文工作流共享 `paper_skills/shared-references/` 下的写作、引用、审计和输出协议，并统一使用相对路径引用这些协议。
 
-#### ✍️ 模块一：论文写作主链路（4 个）
+#### ✍️ 模块一：论文写作主链路（5 个）
 把已有研究叙事、实验结果和大纲组织成可编译的论文初稿。
 
+- `paper-grill-me`：在算法设计、实验规划和论文写作之前，通过逐问逐答形成或否定创新点，并把成功、失败或中止的思考过程记录到 `paper/PAPER_IDEA_GRILL.md`。
 - `paper-plan`：从研究叙事、实验结果或现有材料生成论文大纲，锁定 2-3 个核心问题，明确 claims、evidence、Introduction Blueprint、章节结构、figure plan 和 citation plan。
 - `paper-write`：根据 `paper/PAPER_PLAN.md` 或 `PAPER_PLAN.md` 先逐节生成完整 Markdown 草稿，再把最终内容写入一章一个 `.tex` 文件。
 - `paper-compile`：编译 LaTeX、定位常见错误、循环修复，并检查 PDF、引用、页数和 stale section 文件。
@@ -55,13 +56,14 @@
 - `paper-figure-archi`：从代码或方法描述抽取算法框架，先展示 image-gen prompt，再直接用同一个 prompt 调用 `imagegen` 生成架构图参考图；深度学习默认 Transformer 风格。
 - `paper-figure`：从实验结果生成 publication-quality plots、tables 和 LaTeX include 片段。
 
-#### 🧪 模块三：实验验证与 Claim 管理（4 个）
+#### 🧪 模块三：实验验证与 Claim 管理（5 个）
 让实验、结论和论文表述之间形成闭环，避免“结果不支撑 claim”。
 
 - `experiment-plan`：把方法或 idea 转成 claim-driven 的实验路线图，规划 baseline、ablation、指标、预算和 run order。
 - `experiment-result-to-claim`：实验完成后判断结果支持哪些 claim、哪些 claim 证据不足，并路由到 confirm、supplement 或 pivot。
 - `experiment-ablation-planner`：在主结果通过后，从审稿人视角设计必要、可执行、不过度堆叠的 ablation。
 - `experiment-claim-audit`：核对论文中的数字、比较和 scope claim 是否严格匹配原始结果文件。
+- `paper-grill-with-docs`：在实验完成且论文成稿后，以 Conclusion 为中心逐条调和 claim、科学支持、原始证据匹配和作者处理决定，不替代正式零上下文审计。
 
 #### 🔄 模块四：翻译与润色（6 个）
 处理段落、章节和全文级表达，让论文语言更稳、更准、更像学术写作。
@@ -106,12 +108,14 @@
 ### 方法二：按需调用 Skills
 
 在对话中提到相关关键词，AI 就会触发对应的 Skill：
+- "我还没有稳定 idea，请通过追问帮我形成或否定论文创新点" → 触发 `paper-grill-me`
 - "基于 NARRATIVE_REPORT 写完整论文" → 触发 `paper-writing`
 - "帮我翻译这段论文" → 触发 `paper-translate`
 - "润色这个段落" → 触发 `paper-refine`
 - "评审这篇论文" → 触发 `paper-review`
 - "基于代码生成论文框架图参考" → 触发 `paper-figure-archi`
 - "核对论文里的实验数字" → 触发 `experiment-claim-audit`
+- "这是完整论文和实验材料，请逐条调和 Conclusion claim 与 evidence" → 触发 `paper-grill-with-docs`
 - "帮我写 Rebuttal" → 触发 `rebuttal-writer`
 
 ### 方法三：分阶段确认
@@ -132,6 +136,7 @@
 | 论文模块一、二、三、六中的部分 skills / 工作流设计 | [Auto-claude-code-research-in-sleep](https://github.com/wanshuiyin/Auto-claude-code-research-in-sleep) by wanshuiyin |
 | Rebuttal 相关 Skills | [Paper2Rebuttal](https://github.com/AutoLab-SAI-SJTU/Paper2Rebuttal) by AutoLab-SAI-SJTU |
 | paper-polish-human AI 模式检测 | [humanizer](https://github.com/blader/humanizer) by blader (基于 Wikipedia "Signs of AI writing") |
+| Grill-me相关Skills | [skills](https://github.com/mattpocock/skills) by mattpocock |
 
 感谢这些项目作者的辛勤工作！🌟
 
